@@ -4,14 +4,14 @@ const patients = [
     name: "Desmond Bokor",
     age: 32,
     gender: "Male",
-    status: "Waiting",
+    status: "Registered",
   },
   {
     id: "PT002",
     name: "Black Widow",
     age: 27,
     gender: "Female",
-    status: "Attended",
+    status: "Registered",
   },
 ];
 
