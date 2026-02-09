@@ -94,10 +94,6 @@ function Login() {
             </form>
           </div>
         </div>
-
-        <div className="text-center text-muted mt-3">
-          <small>Demo: Use any email/password and select a role.</small>
-        </div>
       </div>
     </div>
   );
