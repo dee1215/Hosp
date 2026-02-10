@@ -83,6 +83,7 @@ function Login() {
                   <option value="nurse">Nurse</option>
                   <option value="doctor">Doctor</option>
                   <option value="pharmacist">Pharmacist</option>
+                  <option value="billing">Billing Officer</option>
                 </select>
               </div>
 

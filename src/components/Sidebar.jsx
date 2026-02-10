@@ -1,18 +1,33 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function Sidebar() {
+  const { user } = useContext(AuthContext);
+  const role = user?.role;
+
+  const links = [
+    { to: "/dashboard", label: "Dashboard", roles: ["admin", "nurse", "doctor", "pharmacist", "billing"] },
+    { to: "/patients", label: "Patients", roles: ["admin", "nurse", "doctor"] },
+    { to: "/nurse", label: "Nurse", roles: ["admin", "nurse"] },
+    { to: "/doctor", label: "Doctor", roles: ["admin", "doctor"] },
+    { to: "/pharmacy", label: "Pharmacy", roles: ["admin", "pharmacist"] },
+    { to: "/billing", label: "Billing", roles: ["admin", "billing"] },
+  ];
+
   return (
     <aside className="navbar navbar-vertical navbar-expand-lg">
       <div className="container-fluid">
         <h3 className="navbar-brand">Hospital System</h3>
 
         <div className="navbar-nav">
-          <Link className="nav-link" to="/dashboard">Dashboard</Link>
-          <Link className="nav-link" to="/patients">Patients</Link>
-          <Link className="nav-link" to="/nurse">Nurse</Link>
-          <Link className="nav-link" to="/doctor">Doctor</Link>
-          <Link className="nav-link" to="/pharmacy">Pharmacy</Link>
-          <Link className="nav-link" to="/billing">Billing</Link>
+          {links.map((link) => (
+            link.roles.includes(role) && (
+              <Link key={link.to} className="nav-link" to={link.to}>
+                {link.label}
+              </Link>
+            )
+          ))}
         </div>
       </div>
     </aside>
