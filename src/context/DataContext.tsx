@@ -12,6 +12,7 @@ import type {
   Patient,
   PatientStatus,
   Prescription,
+  StaffMember,
   VitalsRecord
 } from "../types";
 
@@ -20,6 +21,7 @@ type DataContextValue = {
   vitalsRecords: VitalsRecord[];
   prescriptions: Prescription[];
   invoices: Invoice[];
+  staff: StaffMember[];
   updatePatientStatus: (
     patientId: string,
     newStatus: PatientStatus,
@@ -27,6 +29,9 @@ type DataContextValue = {
   ) => void;
   addPatient: (patient: Omit<Patient, "status">) => void;
   addVitals: (record: VitalsRecord) => void;
+  addStaff: (member: Omit<StaffMember, "id">) => void;
+  updateStaff: (id: string, updates: Partial<Omit<StaffMember, "id">>) => void;
+  removeStaff: (id: string) => void;
   setPrescriptions: (action: SetStateAction<Prescription[]>) => void;
   setInvoices: (action: SetStateAction<Invoice[]>) => void;
 };
@@ -80,6 +85,9 @@ export default function DataProvider({ children }: DataProviderProps) {
   const [invoices, setInvoicesState] = useState<Invoice[]>(() =>
     loadDataFromStorage("invoices", [])
   );
+  const [staff, setStaff] = useState<StaffMember[]>(() =>
+    loadDataFromStorage("staff", [])
+  );
 
   const setPrescriptions = (action: SetStateAction<Prescription[]>) => {
     setPrescriptionsState((prev) => {
@@ -93,6 +101,31 @@ export default function DataProvider({ children }: DataProviderProps) {
     setInvoicesState((prev) => {
       const next = applyStateAction(prev, action);
       saveDataToStorage("invoices", next);
+      return next;
+    });
+  };
+
+  const addStaff: DataContextValue["addStaff"] = (member) => {
+    setStaff((prev) => {
+      const id = `ST${(prev.length + 1).toString().padStart(3, "0")}`;
+      const next: StaffMember[] = [...prev, { ...member, id }];
+      saveDataToStorage("staff", next);
+      return next;
+    });
+  };
+
+  const updateStaff: DataContextValue["updateStaff"] = (id, updates) => {
+    setStaff((prev) => {
+      const next = prev.map((m) => (m.id === id ? { ...m, ...updates } : m));
+      saveDataToStorage("staff", next);
+      return next;
+    });
+  };
+
+  const removeStaff: DataContextValue["removeStaff"] = (id) => {
+    setStaff((prev) => {
+      const next = prev.filter((m) => m.id !== id);
+      saveDataToStorage("staff", next);
       return next;
     });
   };
@@ -135,9 +168,13 @@ export default function DataProvider({ children }: DataProviderProps) {
     vitalsRecords,
     prescriptions,
     invoices,
+  staff,
     updatePatientStatus,
     addPatient,
     addVitals,
+  addStaff,
+  updateStaff,
+  removeStaff,
     setPrescriptions,
     setInvoices
   };

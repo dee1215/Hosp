@@ -9,6 +9,9 @@ export type PatientStatus =
   | "Billed";
 
 export type User = {
+  id: string;
+  email: string;
+  name: string;
   role: Role;
 };
 
@@ -64,4 +67,14 @@ export type InventoryItem = {
   name: string;
   stock: number;
   unit: string;
+};
+
+export type StaffMember = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  role: Role;
+  department?: string;
 };

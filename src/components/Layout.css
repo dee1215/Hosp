@@ -69,7 +69,6 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
   cursor: pointer;
   transition: var(--transition);
 }
@@ -78,17 +77,10 @@
   transform: translateX(4px);
 }
 
-.logo-icon {
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-}
-
-.logo-text {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.3px;
+.sidebar-logo-img {
+  max-width: 170px;
+  height: auto;
+  display: block;
 }
 
 .sidebar-nav {

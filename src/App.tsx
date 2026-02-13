@@ -7,6 +7,7 @@ import Nurse from "./pages/Nurse";
 import Doctor from "./pages/Doctor";
 import Pharmacy from "./pages/Pharmacy";
 import Billing from "./pages/Billing";
+import Staff from "./pages/Staff";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/billing" element={<Billing />} />
+          <Route path="/staff" element={<Staff />} />
         </Route>
       </Routes>
     </BrowserRouter>

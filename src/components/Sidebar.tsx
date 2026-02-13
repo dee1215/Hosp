@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import type { Role } from "../types";
+import logoImage from "../assests/sidrid-logo.png";
 
 type NavLinkConfig = {
   to: string;
@@ -50,6 +51,12 @@ export default function Sidebar() {
       label: "Billing",
       icon: "💰",
       roles: ["admin", "billing"]
+    },
+    {
+      to: "/staff",
+      label: "Staff",
+      icon: "🧑‍⚕️",
+      roles: ["admin"]
     }
   ];
 
@@ -57,8 +64,7 @@ export default function Sidebar() {
     <aside className="modern-sidebar">
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-icon">🏥</span>
-          <span className="logo-text">MediSync</span>
+          <img src={logoImage} alt="Sidrid logo" className="sidebar-logo-img" />
         </div>
       </div>
 

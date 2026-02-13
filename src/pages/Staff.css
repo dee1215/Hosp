@@ -1,0 +1,141 @@
+.staff-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #ecfeff 0%, #e0f2fe 40%, #f8fafc 100%);
+  min-height: calc(100vh - 70px - 80px);
+}
+
+.staff-header {
+  margin-bottom: 24px;
+}
+
+.staff-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.staff-header p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.staff-info-banner {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.staff-actions {
+  margin-bottom: 18px;
+}
+
+.btn-staff-add {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.btn-staff-add:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.staff-table-wrapper {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.staff-table thead {
+  background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+}
+
+.staff-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+}
+
+.staff-table td {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.staff-id {
+  font-family: "Monaco", "Courier New", monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.staff-role {
+  text-transform: capitalize;
+}
+
+.staff-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 24px 0;
+}
+
+.staff-remove-btn {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.staff-remove-btn:hover {
+  background: #fecaca;
+}
+
+/* Reuse modal styles from Patients (classes already defined globally) */
+
+@media (max-width: 1024px) {
+  .staff-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .staff-container {
+    padding: 12px;
+  }
+
+  .staff-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .staff-table {
+    min-width: 600px;
+  }
+}
+
