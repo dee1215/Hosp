@@ -1,4 +1,4 @@
-function Navbar() {
+export default function Navbar() {
   return (
     <header className="navbar navbar-expand-md navbar-light">
       <div className="container-xl">
@@ -7,5 +7,3 @@ function Navbar() {
     </header>
   );
 }
-
-export default Navbar;

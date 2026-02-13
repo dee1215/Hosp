@@ -1,22 +1,24 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
+
 import Layout from "../components/Layout";
-import { DataContext } from "../context/DataContext";
+import { useData } from "../context/DataContext";
+import type { Invoice } from "../types";
 
 /**
  * Billing Component
  * Generates final invoices for patients after they have received their medications.
  */
-function Billing() {
-  const { patients, invoices, setInvoices, updatePatientStatus } = useContext(DataContext);
-  
+export default function Billing() {
+  const { patients, invoices, setInvoices, updatePatientStatus } = useData();
+
   const [patientId, setPatientId] = useState("");
-  const [billItems, setBillItems] = useState([
+  const [billItems] = useState([
     { desc: "Consultation Fee", amount: 50 },
     { desc: "Medication Charges", amount: 120 }
   ]);
 
   // Filter: Patients who have finished pharmacy stage
-  const payablePatients = patients.filter(p => p.status === "Medicines Dispensed");
+  const payablePatients = patients.filter((p) => p.status === "Medicines Dispensed");
 
   const subtotal = billItems.reduce((acc, item) => acc + item.amount, 0);
   const tax = subtotal * 0.05;
@@ -25,10 +27,12 @@ function Billing() {
   const handleGenerateInvoice = () => {
     if (!patientId) return;
 
-    const patient = patients.find(p => p.id === patientId);
+    const patient = patients.find((p) => p.id === patientId);
+    if (!patient) return;
+
     const invoiceNum = `INV-${Date.now().toString().slice(-6)}`;
-    
-    const newInvoice = {
+
+    const newInvoice: Invoice = {
       id: Date.now(),
       invoiceNum,
       patientId,
@@ -37,13 +41,15 @@ function Billing() {
       timestamp: new Date().toLocaleString()
     };
 
-    setInvoices(prev => [newInvoice, ...prev]);
+    setInvoices((prev) => [newInvoice, ...prev]);
     updatePatientStatus(patientId, "Billed");
     setPatientId("");
   };
 
-  const handlePrint = (inv) => {
+  const handlePrint = (inv: Invoice) => {
     const win = window.open("", "", "width=800,height=600");
+    if (!win) return;
+
     win.document.write(`
       <html>
         <head>
@@ -79,6 +85,7 @@ function Billing() {
         </body>
       </html>
     `);
+
     win.document.close();
     win.print();
   };
@@ -107,10 +114,16 @@ function Billing() {
                 <div className="card-body">
                   <div className="mb-3">
                     <label className="form-label">Select Patient</label>
-                    <select className="form-select" value={patientId} onChange={e => setPatientId(e.target.value)}>
+                    <select
+                      className="form-select"
+                      value={patientId}
+                      onChange={(e) => setPatientId(e.target.value)}
+                    >
                       <option value="">Choose patient...</option>
-                      {payablePatients.map(p => (
-                        <option key={p.id} value={p.id}>{p.name} ({p.id})</option>
+                      {payablePatients.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -131,7 +144,11 @@ function Billing() {
                     </div>
                   </div>
 
-                  <button className="btn btn-primary w-100" disabled={!patientId} onClick={handleGenerateInvoice}>
+                  <button
+                    className="btn btn-primary w-100"
+                    disabled={!patientId}
+                    onClick={handleGenerateInvoice}
+                  >
                     Generate GH₵ Invoice
                   </button>
                 </div>
@@ -156,15 +173,22 @@ function Billing() {
                     </thead>
                     <tbody>
                       {invoices.length === 0 ? (
-                        <tr><td colSpan="4" className="text-center text-muted py-4">No invoices generated</td></tr>
+                        <tr>
+                          <td colSpan={4} className="text-center text-muted py-4">
+                            No invoices generated
+                          </td>
+                        </tr>
                       ) : (
-                        invoices.map(inv => (
+                        invoices.map((inv) => (
                           <tr key={inv.id}>
                             <td className="font-monospace">{inv.invoiceNum}</td>
                             <td>{inv.patientName}</td>
                             <td className="text-primary">GH₵ {inv.total.toFixed(2)}</td>
                             <td>
-                              <button className="btn btn-sm btn-ghost-primary" onClick={() => handlePrint(inv)}>
+                              <button
+                                className="btn btn-sm btn-ghost-primary"
+                                onClick={() => handlePrint(inv)}
+                              >
                                 Print
                               </button>
                             </td>
@@ -182,5 +206,3 @@ function Billing() {
     </Layout>
   );
 }
-
-export default Billing;

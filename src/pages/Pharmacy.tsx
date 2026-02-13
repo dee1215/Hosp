@@ -1,43 +1,47 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
+
 import Layout from "../components/Layout";
-import { DataContext } from "../context/DataContext";
+import { useData } from "../context/DataContext";
+import type { InventoryItem } from "../types";
 
 /**
  * Pharmacy Component
  * Handles medicine inventory and dispensing prescriptions to patients.
  */
-function Pharmacy() {
-  const { patients, prescriptions, updatePatientStatus } = useContext(DataContext);
-  
+export default function Pharmacy() {
+  const { patients, prescriptions, updatePatientStatus } = useData();
+
   // Local inventory state
-  const [inventory, setInventory] = useState([
+  const [inventory, setInventory] = useState<InventoryItem[]>([
     { id: 1, name: "Paracetamol", stock: 500, unit: "tabs" },
     { id: 2, name: "Amoxicillin", stock: 120, unit: "tabs" },
     { id: 3, name: "Ibuprofen", stock: 200, unit: "tabs" },
-    { id: 4, name: "Vitamin C", stock: 300, unit: "tabs" },
+    { id: 4, name: "Vitamin C", stock: 300, unit: "tabs" }
   ]);
 
   const [patientId, setPatientId] = useState("");
   const [dispensing, setDispensing] = useState(false);
 
   // Filter: Patients who have been prescribed medications
-  const prescribedPatients = patients.filter(p => p.status === "Prescribed");
-  
+  const prescribedPatients = patients.filter((p) => p.status === "Prescribed");
+
   // Find the doctor's prescription for the selected patient
-  const prescription = prescriptions.find(pr => pr.patientId === patientId);
+  const prescription = prescriptions.find((pr) => pr.patientId === patientId);
 
   const handleDispense = () => {
-    if (!patientId) return;
+    if (!patientId || !prescription) return;
 
     // Simulate stock reduction (e.g., reduce by 10 for each med)
-    const updatedInventory = inventory.map(item => {
-      const isPrescribed = prescription.medications.some(m => m.name.toLowerCase().includes(item.name.toLowerCase()));
+    const updatedInventory = inventory.map((item) => {
+      const isPrescribed = prescription.medications.some((m) =>
+        m.name.toLowerCase().includes(item.name.toLowerCase())
+      );
       return isPrescribed ? { ...item, stock: item.stock - 10 } : item;
     });
 
     setInventory(updatedInventory);
     updatePatientStatus(patientId, "Medicines Dispensed");
-    
+
     setDispensing(true);
     setTimeout(() => {
       setDispensing(false);
@@ -77,14 +81,16 @@ function Pharmacy() {
                       </tr>
                     </thead>
                     <tbody>
-                      {inventory.map(item => (
+                      {inventory.map((item) => (
                         <tr key={item.id}>
                           <td>{item.name}</td>
                           <td>{item.stock}</td>
                           <td>{item.unit}</td>
                           <td>
-                            <span className={`badge ${item.stock > 100 ? 'bg-success' : 'bg-warning'}`}>
-                              {item.stock > 100 ? 'In Stock' : 'Low Stock'}
+                            <span
+                              className={`badge ${item.stock > 100 ? "bg-success" : "bg-warning"}`}
+                            >
+                              {item.stock > 100 ? "In Stock" : "Low Stock"}
                             </span>
                           </td>
                         </tr>
@@ -104,10 +110,16 @@ function Pharmacy() {
                 <div className="card-body">
                   <div className="mb-3">
                     <label className="form-label">Select Patient</label>
-                    <select className="form-select" value={patientId} onChange={e => setPatientId(e.target.value)}>
+                    <select
+                      className="form-select"
+                      value={patientId}
+                      onChange={(e) => setPatientId(e.target.value)}
+                    >
                       <option value="">Choose patient...</option>
-                      {prescribedPatients.map(p => (
-                        <option key={p.id} value={p.id}>{p.name} ({p.id})</option>
+                      {prescribedPatients.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -115,23 +127,29 @@ function Pharmacy() {
                   {prescription ? (
                     <div className="mb-3 border p-3 rounded bg-light">
                       <h4 className="mb-2 text-primary">Prescription Details</h4>
-                      <p className="mb-1"><strong>Diagnosis:</strong> {prescription.diagnosis}</p>
+                      <p className="mb-1">
+                        <strong>Diagnosis:</strong> {prescription.diagnosis}
+                      </p>
                       <ul className="mb-0 small">
                         {prescription.medications.map((m, i) => (
-                          <li key={i}>{m.name} - {m.dosage} ({m.frequency})</li>
+                          <li key={i}>
+                            {m.name} - {m.dosage} ({m.frequency})
+                          </li>
                         ))}
                       </ul>
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-muted">Select a patient to see their prescription</div>
+                    <div className="text-center py-4 text-muted">
+                      Select a patient to see their prescription
+                    </div>
                   )}
 
-                  <button 
-                    className={`btn btn-primary w-100 ${dispensing ? 'btn-loading' : ''}`}
+                  <button
+                    className={`btn btn-primary w-100 ${dispensing ? "btn-loading" : ""}`}
                     disabled={!prescription || dispensing}
                     onClick={handleDispense}
                   >
-                    {dispensing ? 'Dispensing...' : 'Confirm Dispensing'}
+                    {dispensing ? "Dispensing..." : "Confirm Dispensing"}
                   </button>
                 </div>
               </div>
@@ -142,5 +160,3 @@ function Pharmacy() {
     </Layout>
   );
 }
-
-export default Pharmacy;

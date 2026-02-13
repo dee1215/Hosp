@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.modal-backdrop-dim {
+  background-color: rgba(0,0,0,0.5);
+}
+
+.otp-display-code {
+  font-size: 3rem;
+  letter-spacing: 0.5rem;
+}
+
+.otp-input-large {
+  font-size: 2rem;
+}

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
@@ -8,7 +9,7 @@ import Pharmacy from "./pages/Pharmacy";
 import Billing from "./pages/Billing";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -20,12 +21,8 @@ function App() {
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/billing" element={<Billing />} />
-
         </Route>
-
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

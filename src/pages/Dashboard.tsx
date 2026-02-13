@@ -1,22 +1,26 @@
 import Layout from "../components/Layout";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { DataContext } from "../context/DataContext";
+import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 
 /**
  * Dashboard Component
  * Shows a high-level overview of the hospital's activity.
  */
-function Dashboard() {
-  const { user } = useContext(AuthContext);
-  const { patients, vitalsRecords, prescriptions, invoices } = useContext(DataContext);
+export default function Dashboard() {
+  const { user } = useAuth();
+  const { patients, vitalsRecords, prescriptions, invoices } = useData();
 
   // Calculate dynamic stats
   const stats = [
     { label: "Total Patients", value: patients.length, color: "blue", icon: "👥" },
-    { label: "Vitals Recorded", value: vitalsRecords.length, color: "green", icon: "📋" },
+    {
+      label: "Vitals Recorded",
+      value: vitalsRecords.length,
+      color: "green",
+      icon: "📋"
+    },
     { label: "Prescriptions", value: prescriptions.length, color: "purple", icon: "💊" },
-    { label: "Billed", value: invoices.length, color: "yellow", icon: "💰" },
+    { label: "Billed", value: invoices.length, color: "yellow", icon: "💰" }
   ];
 
   const getRoleDisplay = () => {
@@ -30,10 +34,10 @@ function Dashboard() {
         <div className="container-xl">
           <div className="row align-items-center">
             <div className="col">
-              <h2 className="page-title">
-                Welcome back, {getRoleDisplay()}!
-              </h2>
-              <div className="text-muted small mt-1">Here is what's happening in your hospital today.</div>
+              <h2 className="page-title">Welcome back, {getRoleDisplay()}!</h2>
+              <div className="text-muted small mt-1">
+                Here is what&apos;s happening in your hospital today.
+              </div>
             </div>
           </div>
         </div>
@@ -77,22 +81,31 @@ function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {[...patients].reverse().slice(0, 5).map(p => (
-                        <tr key={p.id}>
-                          <td>
-                            <div>{p.name}</div>
-                            <div className="text-muted small">ID: {p.id}</div>
-                          </td>
-                          <td>
-                            <span className={`badge bg-${p.status === 'Billed' ? 'success' : 'primary'}-lt`}>
-                              {p.status}
-                            </span>
-                          </td>
-                          <td className="text-muted small">
-                            {p.otp ? `Checked in with OTP: ${p.otp}` : 'Waiting for check-in'}
-                          </td>
-                        </tr>
-                      ))}
+                      {[...patients]
+                        .reverse()
+                        .slice(0, 5)
+                        .map((p) => (
+                          <tr key={p.id}>
+                            <td>
+                              <div>{p.name}</div>
+                              <div className="text-muted small">ID: {p.id}</div>
+                            </td>
+                            <td>
+                              <span
+                                className={`badge bg-${
+                                  p.status === "Billed" ? "success" : "primary"
+                                }-lt`}
+                              >
+                                {p.status}
+                              </span>
+                            </td>
+                            <td className="text-muted small">
+                              {p.otp
+                                ? `Checked in with OTP: ${p.otp}`
+                                : "Waiting for check-in"}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -104,5 +117,3 @@ function Dashboard() {
     </Layout>
   );
 }
-
-export default Dashboard;

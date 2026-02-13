@@ -1,42 +1,54 @@
-import { useState, useContext } from "react";
+import { useState, type FormEvent } from "react";
+
 import Layout from "../components/Layout";
-import { DataContext } from "../context/DataContext";
+import { useData } from "../context/DataContext";
+import type { Patient } from "../types";
+import "../App.css";
 
 /**
  * Patients Component
  * Handles patient lookup, registration, and secure check-in via OTP.
  */
-function Patients() {
-  const { patients, addPatient, updatePatientStatus } = useContext(DataContext);
-  
+export default function Patients() {
+  const { patients, addPatient, updatePatientStatus } = useData();
+
   // Local state for modals and forms
   const [showAddModal, setShowAddModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [successMessage, setSuccessMessage] = useState("");
-  
+
   // OTP state
-  const [generatedOtp, setGeneratedOtp] = useState(null);
+  const [generatedOtp, setGeneratedOtp] = useState<number | null>(null);
   const [enteredOtp, setEnteredOtp] = useState("");
-  const [otpStep, setOtpStep] = useState("generate"); // 'generate' or 'verify'
+  const [otpStep, setOtpStep] = useState<"generate" | "verify">("generate");
 
   // New patient state
   const [newPatient, setNewPatient] = useState({ name: "", age: "", gender: "Male" });
 
-  const handleRegister = (e) => {
+  const handleRegister = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const id = `PT${(patients.length + 1).toString().padStart(3, '0')}`;
-    const patientToAdd = { id, ...newPatient, age: parseInt(newPatient.age) };
+
+    const id = `PT${(patients.length + 1).toString().padStart(3, "0")}`;
+    const patientToAdd: Omit<Patient, "status"> = {
+      id,
+      name: newPatient.name,
+      age: Number.parseInt(newPatient.age, 10),
+      gender: newPatient.gender
+    };
+
     addPatient(patientToAdd);
     setShowAddModal(false);
-    setSuccessMessage(`Patient ${patientToAdd.name} registered successfully with ID ${patientToAdd.id}`);
+    setSuccessMessage(
+      `Patient ${patientToAdd.name} registered successfully with ID ${patientToAdd.id}`
+    );
     setNewPatient({ name: "", age: "", gender: "Male" });
-    
+
     // Clear success message after 3 seconds
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
-  const startAttendance = (patient) => {
+  const startAttendance = (patient: Patient) => {
     const otp = Math.floor(1000 + Math.random() * 9000);
     setGeneratedOtp(otp);
     setSelectedPatient(patient);
@@ -45,6 +57,8 @@ function Patients() {
   };
 
   const verifyAttendance = () => {
+    if (!selectedPatient || generatedOtp === null) return;
+
     if (enteredOtp === generatedOtp.toString()) {
       updatePatientStatus(selectedPatient.id, "Waiting", generatedOtp);
       setShowOtpModal(false);
@@ -94,24 +108,26 @@ function Patients() {
                   </tr>
                 </thead>
                 <tbody>
-                  {patients.map(p => (
+                  {patients.map((p) => (
                     <tr key={p.id}>
                       <td className="text-muted font-monospace">{p.id}</td>
                       <td>{p.name}</td>
                       <td>{p.age}</td>
                       <td>{p.gender}</td>
                       <td>
-                        <span className={`badge ${p.status === 'Registered' ? 'bg-secondary' : 'bg-info'}`}>
+                        <span
+                          className={`badge ${p.status === "Registered" ? "bg-secondary" : "bg-info"}`}
+                        >
                           {p.status}
                         </span>
                       </td>
                       <td>
-                        <button 
+                        <button
                           className="btn btn-sm btn-outline-primary"
-                          disabled={p.status !== 'Registered'}
+                          disabled={p.status !== "Registered"}
                           onClick={() => startAttendance(p)}
                         >
-                          {p.status === 'Registered' ? 'Start Check-in' : 'Checked In'}
+                          {p.status === "Registered" ? "Start Check-in" : "Checked In"}
                         </button>
                       </td>
                     </tr>
@@ -125,7 +141,7 @@ function Patients() {
 
       {/* Registration Modal */}
       {showAddModal && (
-        <div className="modal modal-blur show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal modal-blur show d-block modal-backdrop-dim">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content shadow">
               <div className="modal-header">
@@ -136,21 +152,37 @@ function Patients() {
                 <div className="modal-body">
                   <div className="mb-3">
                     <label className="form-label">Full Name</label>
-                    <input type="text" className="form-control" required 
-                      value={newPatient.name} onChange={e => setNewPatient({...newPatient, name: e.target.value})} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      required
+                      value={newPatient.name}
+                      onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                    />
                   </div>
                   <div className="row">
                     <div className="col-6">
                       <div className="mb-3">
                         <label className="form-label">Age</label>
-                        <input type="number" className="form-control" required
-                          value={newPatient.age} onChange={e => setNewPatient({...newPatient, age: e.target.value})} />
+                        <input
+                          type="number"
+                          className="form-control"
+                          required
+                          value={newPatient.age}
+                          onChange={(e) => setNewPatient({ ...newPatient, age: e.target.value })}
+                        />
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="mb-3">
                         <label className="form-label">Gender</label>
-                        <select className="form-select" value={newPatient.gender} onChange={e => setNewPatient({...newPatient, gender: e.target.value})}>
+                        <select
+                          className="form-select"
+                          value={newPatient.gender}
+                          onChange={(e) =>
+                            setNewPatient({ ...newPatient, gender: e.target.value })
+                          }
+                        >
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                         </select>
@@ -159,8 +191,16 @@ function Patients() {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button type="button" className="btn btn-link link-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary ms-auto">Register Patient</button>
+                  <button
+                    type="button"
+                    className="btn btn-link link-secondary"
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary ms-auto">
+                    Register Patient
+                  </button>
                 </div>
               </form>
             </div>
@@ -169,8 +209,8 @@ function Patients() {
       )}
 
       {/* OTP Attendance Modal */}
-      {showOtpModal && (
-        <div className="modal modal-blur show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+      {showOtpModal && selectedPatient && (
+        <div className="modal modal-blur show d-block modal-backdrop-dim">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content shadow">
               <div className="modal-header">
@@ -178,10 +218,12 @@ function Patients() {
                 <button className="btn-close" onClick={() => setShowOtpModal(false)}></button>
               </div>
               <div className="modal-body text-center py-4">
-                {otpStep === 'generate' ? (
+                {otpStep === "generate" ? (
                   <>
-                    <div className="mb-3">Share this code with <strong>{selectedPatient.name}</strong></div>
-                    <div className="h1 text-primary" style={{ fontSize: '3rem', letterSpacing: '0.5rem' }}>{generatedOtp}</div>
+                    <div className="mb-3">
+                      Share this code with <strong>{selectedPatient.name}</strong>
+                    </div>
+                    <div className="h1 text-primary otp-display-code">{generatedOtp}</div>
                     <button className="btn btn-primary mt-4" onClick={() => setOtpStep("verify")}>
                       Proceed to Verification
                     </button>
@@ -189,9 +231,14 @@ function Patients() {
                 ) : (
                   <>
                     <div className="mb-3">Enter the OTP provided by the patient</div>
-                    <input type="text" className="form-control form-control-lg text-center font-monospace" 
-                      placeholder="0000" maxLength="4" style={{ fontSize: '2rem' }}
-                      value={enteredOtp} onChange={e => setEnteredOtp(e.target.value)} />
+                    <input
+                      type="text"
+                      className="form-control form-control-lg text-center font-monospace otp-input-large"
+                      placeholder="0000"
+                      maxLength={4}
+                      value={enteredOtp}
+                      onChange={(e) => setEnteredOtp(e.target.value)}
+                    />
                     <button className="btn btn-success mt-4 w-100" onClick={verifyAttendance}>
                       Confirm & Check-in
                     </button>
@@ -205,5 +252,3 @@ function Patients() {
     </Layout>
   );
 }
-
-export default Patients;

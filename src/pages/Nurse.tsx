@@ -1,17 +1,19 @@
-import { useState, useContext } from "react";
+import { useState, type FormEvent } from "react";
+
 import Layout from "../components/Layout";
-import { DataContext } from "../context/DataContext";
+import { useData } from "../context/DataContext";
+import type { VitalsForm, VitalsRecord } from "../types";
 
 /**
  * Nurse Component
  * Where nurses record vital signs and symptoms for patients who have checked in.
  */
-function Nurse() {
-  const { patients, vitalsRecords, addVitals } = useContext(DataContext);
-  
+export default function Nurse() {
+  const { patients, vitalsRecords, addVitals } = useData();
+
   // Local state for the form
   const [patientId, setPatientId] = useState("");
-  const [vitals, setVitals] = useState({
+  const [vitals, setVitals] = useState<VitalsForm>({
     temp: "",
     bp: "",
     pulse: "",
@@ -20,19 +22,20 @@ function Nurse() {
   const [submitted, setSubmitted] = useState(false);
 
   // Filter: Only patients waiting after OTP check-in
-  const waitingPatients = patients.filter(p => p.status === "Waiting");
+  const waitingPatients = patients.filter((p) => p.status === "Waiting");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!patientId) {
       alert("Please select a patient first.");
       return;
     }
 
-    const patient = patients.find(p => p.id === patientId);
-    
+    const patient = patients.find((p) => p.id === patientId);
+    if (!patient) return;
+
     // Create the record
-    const record = {
+    const record: VitalsRecord = {
       id: Date.now(),
       patientId,
       patientName: patient.name,
@@ -42,7 +45,7 @@ function Nurse() {
 
     // Save to global context
     addVitals(record);
-    
+
     // Feedback to user
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
@@ -85,18 +88,29 @@ function Nurse() {
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label className="form-label">Select Patient (Waiting List)</label>
-                      <select className="form-select" value={patientId} onChange={e => setPatientId(e.target.value)}>
+                      <select
+                        className="form-select"
+                        value={patientId}
+                        onChange={(e) => setPatientId(e.target.value)}
+                      >
                         <option value="">Choose patient...</option>
                         {waitingPatients.length > 0 ? (
-                          waitingPatients.map(p => (
-                            <option key={p.id} value={p.id}>{p.name} ({p.id})</option>
+                          waitingPatients.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} ({p.id})
+                            </option>
                           ))
                         ) : (
-                          <option value="" disabled>No patients waiting</option>
+                          <option value="" disabled>
+                            No patients waiting
+                          </option>
                         )}
                       </select>
                       {waitingPatients.length === 0 && (
-                        <div className="form-text text-muted">No patients are currently waiting. Please ensure patients have been checked in via OTP.</div>
+                        <div className="form-text text-muted">
+                          No patients are currently waiting. Please ensure patients have
+                          been checked in via OTP.
+                        </div>
                       )}
                     </div>
 
@@ -104,30 +118,51 @@ function Nurse() {
                       <div className="col-4">
                         <div className="mb-3">
                           <label className="form-label">Temp (°C)</label>
-                          <input type="number" step="0.1" className="form-control" placeholder="36.5" 
-                            value={vitals.temp} onChange={e => setVitals({...vitals, temp: e.target.value})} />
+                          <input
+                            type="number"
+                            step="0.1"
+                            className="form-control"
+                            placeholder="36.5"
+                            value={vitals.temp}
+                            onChange={(e) => setVitals({ ...vitals, temp: e.target.value })}
+                          />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="mb-3">
                           <label className="form-label">Blood Pressure</label>
-                          <input type="text" className="form-control" placeholder="120/80" 
-                            value={vitals.bp} onChange={e => setVitals({...vitals, bp: e.target.value})} />
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="120/80"
+                            value={vitals.bp}
+                            onChange={(e) => setVitals({ ...vitals, bp: e.target.value })}
+                          />
                         </div>
                       </div>
                       <div className="col-4">
                         <div className="mb-3">
                           <label className="form-label">Pulse (bpm)</label>
-                          <input type="number" className="form-control" placeholder="72" 
-                            value={vitals.pulse} onChange={e => setVitals({...vitals, pulse: e.target.value})} />
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="72"
+                            value={vitals.pulse}
+                            onChange={(e) => setVitals({ ...vitals, pulse: e.target.value })}
+                          />
                         </div>
                       </div>
                     </div>
 
                     <div className="mb-3">
                       <label className="form-label">Symptoms & Observations</label>
-                      <textarea className="form-control" rows="3" placeholder="Describe how the patient feels..."
-                        value={vitals.symptoms} onChange={e => setVitals({...vitals, symptoms: e.target.value})}></textarea>
+                      <textarea
+                        className="form-control"
+                        rows={3}
+                        placeholder="Describe how the patient feels..."
+                        value={vitals.symptoms}
+                        onChange={(e) => setVitals({ ...vitals, symptoms: e.target.value })}
+                      ></textarea>
                     </div>
 
                     <div className="form-footer">
@@ -158,14 +193,18 @@ function Nurse() {
                     </thead>
                     <tbody>
                       {vitalsRecords.length === 0 ? (
-                        <tr><td colSpan="4" className="text-center text-muted py-4">No records yet</td></tr>
+                        <tr>
+                          <td colSpan={4} className="text-center text-muted py-4">
+                            No records yet
+                          </td>
+                        </tr>
                       ) : (
-                        vitalsRecords.map(r => (
+                        vitalsRecords.map((r) => (
                           <tr key={r.id}>
                             <td>{r.patientName}</td>
                             <td>{r.temp}°C</td>
                             <td>{r.bp}</td>
-                            <td className="text-muted small">{r.timestamp.split(',')[1]}</td>
+                            <td className="text-muted small">{r.timestamp.split(",")[1]}</td>
                           </tr>
                         ))
                       )}
@@ -180,5 +219,3 @@ function Nurse() {
     </Layout>
   );
 }
-
-export default Nurse;
