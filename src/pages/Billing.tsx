@@ -26,7 +26,10 @@ export default function Billing() {
   const total = subtotal + tax;
 
   const handleGenerateInvoice = () => {
-    if (!patientId) return;
+    if (!patientId) {
+      alert("Please select a patient first");
+      return;
+    }
 
     const patient = patients.find((p) => p.id === patientId);
     if (!patient) return;
@@ -122,7 +125,7 @@ export default function Billing() {
                 </select>
               </div>
 
-              <div className="bill-summary">
+              <div className="bill-summary" style={{ display: patientId ? "block" : "none" }}>
                 <p className="bill-summary-title">💵 Cost Summary</p>
                 <div className="bill-item">
                   <span className="bill-label">Consultation Fee</span>

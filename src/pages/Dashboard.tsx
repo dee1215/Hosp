@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import type { Patient } from "../types";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [sortField, setSortField] = useState<string>("name");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [selectedPatientForView, setSelectedPatientForView] = useState<Patient | null>(null);
 
   // KPI Stats - More comprehensive hospital metrics
   const stats = [
@@ -276,7 +278,7 @@ export default function Dashboard() {
                     </td>
                     <td><span className="age-text">{p.age} years</span></td>
                     <td><span className="gender-text">{p.gender}</span></td>
-                    <td><button className="action-btn">View →</button></td>
+                    <td><button className="action-btn" onClick={() => setSelectedPatientForView(p)}>View →</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -359,6 +361,45 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Patient Details Popup */}
+        {selectedPatientForView && (
+          <div className="popup-overlay">
+            <div className="popup-card">
+              <div className="popup-header">
+                <h3>Patient Details</h3>
+                <button className="popup-close" onClick={() => setSelectedPatientForView(null)}>✕</button>
+              </div>
+              <div className="popup-body">
+                <div className="detail-row">
+                  <span className="detail-label">ID:</span>
+                  <span className="detail-value">{selectedPatientForView.id}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Name:</span>
+                  <span className="detail-value">{selectedPatientForView.name}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Age:</span>
+                  <span className="detail-value">{selectedPatientForView.age} years</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Gender:</span>
+                  <span className="detail-value">{selectedPatientForView.gender}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Status:</span>
+                  <span className={`status-badge status-${selectedPatientForView.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                    {selectedPatientForView.status}
+                  </span>
+                </div>
+              </div>
+              <div className="popup-footer">
+                <button className="btn-popup-close" onClick={() => setSelectedPatientForView(null)}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

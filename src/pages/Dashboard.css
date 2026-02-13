@@ -417,11 +417,18 @@
 }
 
 .calendar-container {
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  border: 2px solid rgba(14, 165, 233, 0.15);
   border-radius: 1.5rem;
   padding: 2rem;
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.calendar-container:hover {
+  border-color: rgba(14, 165, 233, 0.3);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
 }
 
 .calendar-container .calendar-header {
@@ -430,130 +437,173 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 2px solid rgba(14, 165, 233, 0.1);
 }
 
 .calendar-container h3 {
   font-size: 1.35rem;
   margin: 0;
-  color: var(--text-primary);
+  color: #1e293b;
   font-weight: 700;
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .date-picker {
   padding: 0.75rem 1rem;
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: white;
+  border: 2px solid rgba(14, 165, 233, 0.2);
   border-radius: 0.75rem;
-  color: var(--text-primary);
+  color: #1e293b;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .date-picker:hover {
-  border-color: rgba(148, 163, 184, 0.5);
+  border-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.05);
 }
 
 .date-picker:focus {
   outline: none;
-  border-color: #06b6d4;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+  background: white;
 }
 
 .calendar-month-year {
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #06b6d4;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .weekday {
   text-align: center;
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0ea5e9;
+  font-size: 0.85rem;
   padding: 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .calendar-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .empty-date {
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1;
+  min-height: 50px;
 }
 
 .calendar-date {
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f9fafb;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px solid rgba(14, 165, 233, 0.15);
+  border-radius: 1rem;
   cursor: pointer;
-  font-weight: 600;
-  color: #cbd5e1;
-  transition: all 0.3s ease;
+  font-weight: 700;
+  color: #64748b;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  line-height: 1;
 }
 
 .calendar-date:hover {
-  border-color: rgba(148, 163, 184, 0.6);
-  background: #edf2ff;
+  border-color: rgba(14, 165, 233, 0.4);
+  background: linear-gradient(135deg, #edf2ff 0%, #e0f2fe 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.15);
+  color: #1e293b;
 }
 
 .calendar-date.selected {
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
-  border-color: #06b6d4;
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  border-color: #0284c7;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+  transform: scale(1.08);
 }
 
 .event-dot {
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   background: #ef4444;
   border-radius: 50%;
-  bottom: 4px;
+  bottom: 6px;
+  box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
 }
 
 .calendar-date.has-event:not(.selected) .event-dot {
   background: #f59e0b;
 }
 
+.calendar-date.has-event:not(.selected) {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
 /* Quick Stats */
 .quick-stats {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  border: 2px solid rgba(6, 182, 212, 0.15);
   border-radius: 1.5rem;
   padding: 2rem;
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.quick-stats:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 12px 40px rgba(6, 182, 212, 0.15);
 }
 
 .quick-stats h3 {
   font-size: 1.2rem;
-  color: #f1f5f9;
+  color: #06b6d4;
   margin: 0 0 1.5rem 0;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 
 .stat-item {
   margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.1);
 }
 
 .stat-item:last-child {
   margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .stat-bar-label {
@@ -562,25 +612,35 @@
   align-items: center;
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
-  color: #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
 }
 
 .stat-percent {
-  font-weight: 700;
+  font-weight: 800;
   color: #06b6d4;
+  background: rgba(6, 182, 212, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
 }
 
 .stat-bar {
-  height: 8px;
-  background: rgba(30, 41, 59, 0.8);
+  height: 10px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e0e7ff 100%);
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .stat-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+
+
   border-radius: 10px;
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -697,3 +757,119 @@
     font-size: 0.75rem;
   }
 }
+
+/* Patient Details Popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 250, 252, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(1px);
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(6, 182, 212, 0.2);
+  max-width: 500px;
+  width: 90%;
+  z-index: 1001;
+  position: relative;
+  animation: slideInUp 0.4s ease;
+  border: 2px solid rgba(6, 182, 212, 0.15);
+}
+
+.popup-header {
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 1.375rem 1.375rem 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.popup-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(90deg);
+}
+
+.popup-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(6, 182, 212, 0.1);
+}
+
+.detail-label {
+  font-weight: 700;
+  color: #0ea5e9;
+  min-width: 70px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  color: #1e293b;
+  font-weight: 500;
+  flex: 1;
+}
+
+.popup-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(6, 182, 212, 0.1);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-popup-close {
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-popup-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(6, 182, 212, 0.3);
+}
+

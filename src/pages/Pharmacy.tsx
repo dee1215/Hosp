@@ -22,6 +22,7 @@ export default function Pharmacy() {
 
   const [patientId, setPatientId] = useState("");
   const [dispensing, setDispensing] = useState(false);
+  const [error, setError] = useState("");
 
   // Filter: Patients who have been prescribed medications
   const prescribedPatients = patients.filter((p) => p.status === "Prescribed");
@@ -30,7 +31,17 @@ export default function Pharmacy() {
   const prescription = prescriptions.find((pr) => pr.patientId === patientId);
 
   const handleDispense = () => {
-    if (!patientId || !prescription) return;
+    setError("");
+
+    if (!patientId) {
+      setError("Please select a patient first.");
+      return;
+    }
+
+    if (!prescription) {
+      setError("This patient does not have a valid prescription.");
+      return;
+    }
 
     // Simulate stock reduction (e.g., reduce by 10 for each med)
     const updatedInventory = inventory.map((item) => {
@@ -44,6 +55,7 @@ export default function Pharmacy() {
     updatePatientStatus(patientId, "Medicines Dispensed");
 
     setDispensing(true);
+    setError("");
     setTimeout(() => {
       setDispensing(false);
       setPatientId("");
@@ -110,9 +122,12 @@ export default function Pharmacy() {
               <div className="form-group">
                 <label className="form-label form-label-required">Select Patient</label>
                 <select
-                  className="form-select"
+                  className={`form-select ${error && !patientId ? "input-error" : ""}`}
                   value={patientId}
-                  onChange={(e) => setPatientId(e.target.value)}
+                  onChange={(e) => {
+                    setPatientId(e.target.value);
+                    setError("");
+                  }}
                 >
                   <option value="">Choose patient...</option>
                   {prescribedPatients.map((p) => (
@@ -121,6 +136,7 @@ export default function Pharmacy() {
                     </option>
                   ))}
                 </select>
+                {error && <div className="form-error">{error}</div>}
               </div>
 
               {prescription ? (
@@ -146,7 +162,7 @@ export default function Pharmacy() {
 
               <button
                 className={`btn-dispense ${dispensing ? "loading" : ""}`}
-                disabled={!prescription || dispensing}
+                disabled={!prescription || dispensing || error.length > 0}
                 onClick={handleDispense}
               >
                 {dispensing ? "Dispensing..." : "Confirm Dispensing"}

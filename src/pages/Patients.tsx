@@ -128,14 +128,14 @@ export default function Patients() {
 
       {/* Registration Modal */}
       {showAddModal && (
-        <div className="modal-backdrop">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2 className="modal-title">New Patient Registration</h2>
-              <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <div className="popup-header">
+              <h3>New Patient Registration</h3>
+              <button className="popup-close" onClick={() => setShowAddModal(false)}>✕</button>
             </div>
             <form onSubmit={handleRegister}>
-              <div className="modal-body">
+              <div className="popup-body">
                 <div className="form-group">
                   <label className="form-label form-label-required">Full Name</label>
                   <input
@@ -174,10 +174,10 @@ export default function Patients() {
                   </div>
                 </div>
               </div>
-              <div className="modal-footer">
+              <div className="popup-footer">
                 <button
                   type="button"
-                  className="btn-cancel"
+                  className="btn-popup-close"
                   onClick={() => setShowAddModal(false)}
                 >
                   Cancel
@@ -191,15 +191,15 @@ export default function Patients() {
         </div>
       )}
 
-      {/* OTP Attendance Modal */}
+      {/* OTP Attendance Popup */}
       {showOtpModal && selectedPatient && (
-        <div className="modal-backdrop">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2 className="modal-title">Patient Check-in (OTP)</h2>
-              <button className="modal-close" onClick={() => setShowOtpModal(false)}>×</button>
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <div className="popup-header">
+              <h3>Patient Check-in (OTP)</h3>
+              <button className="popup-close" onClick={() => setShowOtpModal(false)}>✕</button>
             </div>
-            <div className="modal-body">
+            <div className="popup-body">
               {otpStep === "generate" ? (
                 <div className="otp-display">
                   <p style={{ marginBottom: "16px" }}>
@@ -244,6 +244,15 @@ export default function Patients() {
                   </button>
                 </div>
               )}
+            </div>
+            <div className="popup-footer">
+              <button
+                className="btn-popup-close"
+                style={{ marginRight: "auto" }}
+                onClick={() => setShowOtpModal(false)}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

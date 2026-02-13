@@ -135,20 +135,20 @@ export default function Staff() {
         </div>
 
         {showAddModal && (
-          <div className="modal-backdrop">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2 className="modal-title">Add Staff Member</h2>
+          <div className="popup-overlay">
+            <div className="popup-card">
+              <div className="popup-header">
+                <h3>Add Staff Member</h3>
                 <button
-                  className="modal-close"
+                  className="popup-close"
                   onClick={() => setShowAddModal(false)}
                   type="button"
                 >
-                  ×
+                  ✕
                 </button>
               </div>
               <form onSubmit={handleSubmit}>
-                <div className="modal-body">
+                <div className="popup-body">
                   <div className="form-group">
                     <label className="form-label form-label-required">Full Name</label>
                     <input
@@ -229,10 +229,10 @@ export default function Staff() {
                     />
                   </div>
                 </div>
-                <div className="modal-footer">
+                <div className="popup-footer">
                   <button
                     type="button"
-                    className="btn-cancel"
+                    className="btn-popup-close"
                     onClick={() => setShowAddModal(false)}
                   >
                     Cancel

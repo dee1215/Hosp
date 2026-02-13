@@ -454,3 +454,24 @@ textarea:focus {
     opacity: 1;
   }
 }
+/* Error Styling */
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+.input-error:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-error {
+  font-size: 13px;
+  color: #ef4444;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.medication-item.has-error input {
+  border-color: #fca5a5;
+}

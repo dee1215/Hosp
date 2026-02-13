@@ -23,6 +23,7 @@ export default function Doctor() {
   const [diagnosis, setDiagnosis] = useState("");
   const [meds, setMeds] = useState<Medication[]>([{ name: "", dosage: "", frequency: "" }]);
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Filter: Patients ready for the doctor
   const readyPatients = patients.filter((p) => p.status === "Vitals Taken");
@@ -30,8 +31,37 @@ export default function Doctor() {
   // Find the nurse's report for the selected patient
   const nurseReport = vitalsRecords.find((r) => r.patientId === patientId);
 
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!patientId) {
+      newErrors.patientId = "Please select a patient.";
+    }
+
+    if (!diagnosis.trim()) {
+      newErrors.diagnosis = "Diagnosis is required.";
+    }
+
+    // Check medications - each filled field should have all three fields filled
+    const filledMeds = meds.filter((m) => m.name || m.dosage || m.frequency);
+    const completeMeds = filledMeds.every((m) => m.name && m.dosage && m.frequency);
+
+    if (filledMeds.length > 0 && !completeMeds) {
+      newErrors.medications =
+        "For each medication, all fields (name, dosage, frequency) are required.";
+    }
+
+    if (meds.every((m) => !m.name)) {
+      newErrors.medications = "Please add at least one complete medication.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const addMedication = () => {
     setMeds([...meds, { name: "", dosage: "", frequency: "" }]);
+    if (errors.medications) setErrors({ ...errors, medications: "" });
   };
 
   const handleMedChange = (index: number, field: keyof Medication, value: string) => {
@@ -41,8 +71,8 @@ export default function Doctor() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!patientId || !diagnosis) {
-      alert("Please select a patient and enter a diagnosis.");
+
+    if (!validateForm()) {
       return;
     }
 
@@ -68,6 +98,7 @@ export default function Doctor() {
     setPatientId("");
     setDiagnosis("");
     setMeds([{ name: "", dosage: "", frequency: "" }]);
+    setErrors({});
   };
 
   return (
@@ -93,9 +124,12 @@ export default function Doctor() {
                 <div className="form-group">
                   <label className="form-label form-label-required">Select Patient</label>
                   <select
-                    className="form-select"
+                    className={`form-select ${errors.patientId ? "input-error" : ""}`}
                     value={patientId}
-                    onChange={(e) => setPatientId(e.target.value)}
+                    onChange={(e) => {
+                      setPatientId(e.target.value);
+                      if (errors.patientId) setErrors({ ...errors, patientId: "" });
+                    }}
                     required
                   >
                     <option value="">Choose patient...</option>
@@ -111,6 +145,7 @@ export default function Doctor() {
                       </option>
                     )}
                   </select>
+                  {errors.patientId && <div className="form-error">{errors.patientId}</div>}
                   {readyPatients.length === 0 && (
                     <div className="form-text">
                       No patients with vitals recorded yet. Please ensure patients have been checked in and vitals recorded by the nurse.
@@ -145,12 +180,16 @@ export default function Doctor() {
                 <div className="form-group">
                   <label className="form-label form-label-required">Diagnosis</label>
                   <textarea
-                    className="form-input"
+                    className={`form-input ${errors.diagnosis ? "input-error" : ""}`}
                     placeholder="Enter your diagnosis..."
                     required
                     value={diagnosis}
-                    onChange={(e) => setDiagnosis(e.target.value)}
+                    onChange={(e) => {
+                      setDiagnosis(e.target.value);
+                      if (errors.diagnosis) setErrors({ ...errors, diagnosis: "" });
+                    }}
                   ></textarea>
+                  {errors.diagnosis && <div className="form-error">{errors.diagnosis}</div>}
                 </div>
 
                 <div className="medications-section">
@@ -165,16 +204,22 @@ export default function Doctor() {
                     </button>
                   </div>
 
+                  {errors.medications && <div className="form-error" style={{ marginBottom: "12px" }}>{errors.medications}</div>}
+
                   <div className="medications-list">
                     {meds.map((m, index) => (
-                      <div key={index} className="medication-item">
+                      <div key={index} className={`medication-item ${errors.medications && (!m.name || !m.dosage || !m.frequency) ? "has-error" : ""}`}>
                         <div className="medication-input">
                           <label>Medicine Name</label>
                           <input
                             type="text"
                             placeholder="e.g., Paracetamol"
+                            className={!m.name && errors.medications ? "input-error" : ""}
                             value={m.name}
-                            onChange={(e) => handleMedChange(index, "name", e.target.value)}
+                            onChange={(e) => {
+                              handleMedChange(index, "name", e.target.value);
+                              if (errors.medications) setErrors({ ...errors, medications: "" });
+                            }}
                           />
                         </div>
                         <div className="medication-input">
@@ -182,8 +227,12 @@ export default function Doctor() {
                           <input
                             type="text"
                             placeholder="e.g., 500mg"
+                            className={!m.dosage && errors.medications ? "input-error" : ""}
                             value={m.dosage}
-                            onChange={(e) => handleMedChange(index, "dosage", e.target.value)}
+                            onChange={(e) => {
+                              handleMedChange(index, "dosage", e.target.value);
+                              if (errors.medications) setErrors({ ...errors, medications: "" });
+                            }}
                           />
                         </div>
                         <div className="medication-input">
@@ -191,8 +240,12 @@ export default function Doctor() {
                           <input
                             type="text"
                             placeholder="e.g., 3x daily"
+                            className={!m.frequency && errors.medications ? "input-error" : ""}
                             value={m.frequency}
-                            onChange={(e) => handleMedChange(index, "frequency", e.target.value)}
+                            onChange={(e) => {
+                              handleMedChange(index, "frequency", e.target.value);
+                              if (errors.medications) setErrors({ ...errors, medications: "" });
+                            }}
                           />
                         </div>
                         {meds.length > 1 && (
@@ -214,7 +267,7 @@ export default function Doctor() {
                 </div>
 
                 <div className="action-buttons">
-                  <button type="submit" className="btn-submit" disabled={!patientId || !diagnosis}>
+                  <button type="submit" className="btn-submit">
                     Issue Prescription
                   </button>
                 </div>
