@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import type { InventoryItem } from "../types";
+import "./Pharmacy.css";
 
 /**
  * Pharmacy Component
@@ -51,108 +52,105 @@ export default function Pharmacy() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Pharmacy Area - Medicine Dispensing</h2>
+      <div className="pharmacy-container">
+        <div className="pharmacy-header">
+          <h1>💊 Pharmacy Area - Medicine Dispensing</h1>
+          <p>Manage inventory and dispense prescriptions</p>
+        </div>
+
+        <div className="pharmacy-layout">
+          {/* Inventory Table */}
+          <div className="inventory-card">
+            <div className="card-header">
+              <h3>💊 Medicine Inventory</h3>
+            </div>
+            <div className="table-wrapper">
+              <table className="inventory-table">
+                <thead>
+                  <tr>
+                    <th>Medicine</th>
+                    <th>Stock Level</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventory.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <span className="medicine-name">
+                          <span className="medicine-badge"></span>
+                          {item.name}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="stock-level">{item.stock}</span>
+                      </td>
+                      <td>
+                        <span className="unit-label">{item.unit}</span>
+                      </td>
+                      <td>
+                        <span className={`stock-status ${item.stock > 100 ? "status-in-stock" : "status-low-stock"}`}>
+                          {item.stock > 100 ? "In Stock" : "Low Stock"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="row row-cards">
-            {/* Inventory Table */}
-            <div className="col-md-7">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Medicine Inventory</h3>
-                </div>
-                <div className="table-responsive">
-                  <table className="table table-vcenter card-table">
-                    <thead>
-                      <tr>
-                        <th>Medicine</th>
-                        <th>Stock Level</th>
-                        <th>Unit</th>
-                        <th className="w-1">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {inventory.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.name}</td>
-                          <td>{item.stock}</td>
-                          <td>{item.unit}</td>
-                          <td>
-                            <span
-                              className={`badge ${item.stock > 100 ? "bg-success" : "bg-warning"}`}
-                            >
-                              {item.stock > 100 ? "In Stock" : "Low Stock"}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+          {/* Dispensing Form */}
+          <div className="dispensing-card">
+            <div className="card-header">
+              <h3>Dispense Prescription</h3>
             </div>
-
-            {/* Dispensing Form */}
-            <div className="col-md-5">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Dispense Prescription</h3>
-                </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label className="form-label">Select Patient</label>
-                    <select
-                      className="form-select"
-                      value={patientId}
-                      onChange={(e) => setPatientId(e.target.value)}
-                    >
-                      <option value="">Choose patient...</option>
-                      {prescribedPatients.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} ({p.id})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {prescription ? (
-                    <div className="mb-3 border p-3 rounded bg-light">
-                      <h4 className="mb-2 text-primary">Prescription Details</h4>
-                      <p className="mb-1">
-                        <strong>Diagnosis:</strong> {prescription.diagnosis}
-                      </p>
-                      <ul className="mb-0 small">
-                        {prescription.medications.map((m, i) => (
-                          <li key={i}>
-                            {m.name} - {m.dosage} ({m.frequency})
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 text-muted">
-                      Select a patient to see their prescription
-                    </div>
-                  )}
-
-                  <button
-                    className={`btn btn-primary w-100 ${dispensing ? "btn-loading" : ""}`}
-                    disabled={!prescription || dispensing}
-                    onClick={handleDispense}
-                  >
-                    {dispensing ? "Dispensing..." : "Confirm Dispensing"}
-                  </button>
-                </div>
+            <div className="card-body">
+              <div className="form-group">
+                <label className="form-label form-label-required">Select Patient</label>
+                <select
+                  className="form-select"
+                  value={patientId}
+                  onChange={(e) => setPatientId(e.target.value)}
+                >
+                  <option value="">Choose patient...</option>
+                  {prescribedPatients.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.id})
+                    </option>
+                  ))}
+                </select>
               </div>
+
+              {prescription ? (
+                <div className="prescription-details">
+                  <p className="prescription-title">📋 Prescription Details</p>
+                  <div className="prescription-diagnosis">
+                    <strong>Diagnosis:</strong>
+                    <div>{prescription.diagnosis}</div>
+                  </div>
+                  <ul className="medications-list">
+                    {prescription.medications.map((m, i) => (
+                      <li key={i}>
+                        {m.name} - {m.dosage} ({m.frequency})
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div className="no-prescription">
+                  Select a patient to view their prescription
+                </div>
+              )}
+
+              <button
+                className={`btn-dispense ${dispensing ? "loading" : ""}`}
+                disabled={!prescription || dispensing}
+                onClick={handleDispense}
+              >
+                {dispensing ? "Dispensing..." : "Confirm Dispensing"}
+              </button>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import type { Patient } from "../types";
-import "../App.css";
+import "./Patients.css";
 
 /**
  * Patients Component
@@ -70,181 +70,180 @@ export default function Patients() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Patient Management</h2>
-              {successMessage && (
-                <div className="alert alert-success alert-dismissible mt-2" role="alert">
-                  <div className="d-flex">
-                    <strong>Success!</strong> &nbsp; {successMessage}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="col-auto ms-auto">
-              <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-                + Register New Patient
-              </button>
-            </div>
-          </div>
+      <div className="patients-container">
+        <div className="patients-header">
+          <h1>👥 Patient Management</h1>
+          <p>Register, manage, and track patient check-ins</p>
         </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="card shadow-sm">
-            <div className="table-responsive">
-              <table className="table table-vcenter card-table">
-                <thead>
-                  <tr>
-                    <th>Patient ID</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Status</th>
-                    <th className="w-1">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patients.map((p) => (
-                    <tr key={p.id}>
-                      <td className="text-muted font-monospace">{p.id}</td>
-                      <td>{p.name}</td>
-                      <td>{p.age}</td>
-                      <td>{p.gender}</td>
-                      <td>
-                        <span
-                          className={`badge ${p.status === "Registered" ? "bg-secondary" : "bg-info"}`}
-                        >
-                          {p.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          disabled={p.status !== "Registered"}
-                          onClick={() => startAttendance(p)}
-                        >
-                          {p.status === "Registered" ? "Start Check-in" : "Checked In"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )}
+
+        <div className="patients-actions">
+          <button className="btn-register" onClick={() => setShowAddModal(true)}>
+            + Register New Patient
+          </button>
+        </div>
+
+        <div className="patients-table-wrapper">
+          <table className="patients-table">
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patients.map((p) => (
+                <tr key={p.id}>
+                  <td className="patient-id">{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.age}</td>
+                  <td>{p.gender}</td>
+                  <td>
+                    <span className={`patient-status status-${p.status.toLowerCase().replace(" ", "-")}`}>
+                      {p.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      className="patient-action-btn"
+                      disabled={p.status !== "Registered"}
+                      onClick={() => startAttendance(p)}
+                    >
+                      {p.status === "Registered" ? "Start Check-in" : "Checked In"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
       {/* Registration Modal */}
       {showAddModal && (
-        <div className="modal modal-blur show d-block modal-backdrop-dim">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content shadow">
-              <div className="modal-header">
-                <h5 className="modal-title">New Patient Registration</h5>
-                <button className="btn-close" onClick={() => setShowAddModal(false)}></button>
-              </div>
-              <form onSubmit={handleRegister}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Full Name</label>
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 className="modal-title">New Patient Registration</h2>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
+            </div>
+            <form onSubmit={handleRegister}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="form-label form-label-required">Full Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    required
+                    value={newPatient.name}
+                    onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                    placeholder="Enter full name"
+                  />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label form-label-required">Age</label>
                     <input
-                      type="text"
-                      className="form-control"
+                      type="number"
+                      className="form-input"
                       required
-                      value={newPatient.name}
-                      onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                      value={newPatient.age}
+                      onChange={(e) => setNewPatient({ ...newPatient, age: e.target.value })}
+                      placeholder="Enter age"
                     />
                   </div>
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="mb-3">
-                        <label className="form-label">Age</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          required
-                          value={newPatient.age}
-                          onChange={(e) => setNewPatient({ ...newPatient, age: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="mb-3">
-                        <label className="form-label">Gender</label>
-                        <select
-                          className="form-select"
-                          value={newPatient.gender}
-                          onChange={(e) =>
-                            setNewPatient({ ...newPatient, gender: e.target.value })
-                          }
-                        >
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                        </select>
-                      </div>
-                    </div>
+                  <div className="form-group">
+                    <label className="form-label form-label-required">Gender</label>
+                    <select
+                      className="form-select"
+                      value={newPatient.gender}
+                      onChange={(e) =>
+                        setNewPatient({ ...newPatient, gender: e.target.value })
+                      }
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
                   </div>
                 </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-link link-secondary"
-                    onClick={() => setShowAddModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary ms-auto">
-                    Register Patient
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-submit">
+                  Register Patient
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
       {/* OTP Attendance Modal */}
       {showOtpModal && selectedPatient && (
-        <div className="modal modal-blur show d-block modal-backdrop-dim">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content shadow">
-              <div className="modal-header">
-                <h5 className="modal-title">Patient Attendance (OTP)</h5>
-                <button className="btn-close" onClick={() => setShowOtpModal(false)}></button>
-              </div>
-              <div className="modal-body text-center py-4">
-                {otpStep === "generate" ? (
-                  <>
-                    <div className="mb-3">
-                      Share this code with <strong>{selectedPatient.name}</strong>
-                    </div>
-                    <div className="h1 text-primary otp-display-code">{generatedOtp}</div>
-                    <button className="btn btn-primary mt-4" onClick={() => setOtpStep("verify")}>
-                      Proceed to Verification
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="mb-3">Enter the OTP provided by the patient</div>
-                    <input
-                      type="text"
-                      className="form-control form-control-lg text-center font-monospace otp-input-large"
-                      placeholder="0000"
-                      maxLength={4}
-                      value={enteredOtp}
-                      onChange={(e) => setEnteredOtp(e.target.value)}
-                    />
-                    <button className="btn btn-success mt-4 w-100" onClick={verifyAttendance}>
-                      Confirm & Check-in
-                    </button>
-                  </>
-                )}
-              </div>
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 className="modal-title">Patient Check-in (OTP)</h2>
+              <button className="modal-close" onClick={() => setShowOtpModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              {otpStep === "generate" ? (
+                <div className="otp-display">
+                  <p style={{ marginBottom: "16px" }}>
+                    Share this code with <strong>{selectedPatient.name}</strong>
+                  </p>
+                  <div className="otp-code">{generatedOtp}</div>
+                  <button
+                    className="btn-submit"
+                    style={{ marginTop: "24px" }}
+                    onClick={() => setOtpStep("verify")}
+                  >
+                    Proceed to Verification
+                  </button>
+                </div>
+              ) : (
+                <div className="otp-display">
+                  <p style={{ marginBottom: "20px" }}>
+                    Enter the OTP provided by the patient
+                  </p>
+                  <input
+                    type="text"
+                    maxLength={4}
+                    placeholder="0000"
+                    value={enteredOtp}
+                    onChange={(e) => setEnteredOtp(e.target.value)}
+                    style={{
+                      fontSize: "32px",
+                      textAlign: "center",
+                      padding: "12px",
+                      border: "2px solid var(--primary)",
+                      borderRadius: "var(--radius-md)",
+                      fontFamily: "Monaco, monospace",
+                      fontWeight: 700,
+                      letterSpacing: "8px",
+                      marginBottom: "24px",
+                      width: "100%",
+                      boxSizing: "border-box"
+                    }}
+                  />
+                  <button className="btn-submit" onClick={verifyAttendance}>
+                    Confirm & Check-in
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

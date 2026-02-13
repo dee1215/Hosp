@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import "./Layout.css";
 
 type LayoutProps = {
   children: ReactNode;
@@ -9,11 +9,11 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="page">
+    <div className="modern-layout">
       <Sidebar />
-      <div className="page-wrapper">
+      <div className="layout-wrapper">
         <Navbar />
-        <div className="page-body container-xl">{children}</div>
+        <main className="layout-content">{children}</main>
       </div>
     </div>
   );

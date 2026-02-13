@@ -4,16 +4,16 @@ import { useAuth } from "../context/AuthContext";
 import type { Role } from "../types";
 import "./Login.css";
 
-const roles: { value: Role; label: string; icon: string; color: string }[] = [
-  { value: "admin", label: "Reception / Admin", icon: "👨‍💼", color: "#0ea5e9" },
-  { value: "doctor", label: "Doctor", icon: "👨‍⚕️", color: "#06b6d4" },
-  { value: "nurse", label: "Nurse", icon: "👩‍⚕️", color: "#10b981" },
-  { value: "pharmacist", label: "Pharmacist", icon: "💊", color: "#14b8a6" },
-  { value: "billing", label: "Billing Officer", icon: "💰", color: "#2563eb" },
+const roles: { value: Role; label: string; icon: string; gradient: string }[] = [
+  { value: "admin", label: "Reception", icon: "👨‍💼", gradient: "from-blue-500 to-cyan-500" },
+  { value: "doctor", label: "Doctor", icon: "👨‍⚕️", gradient: "from-red-500 to-pink-500" },
+  { value: "nurse", label: "Nurse", icon: "👩‍⚕️", gradient: "from-emerald-500 to-teal-500" },
+  { value: "pharmacist", label: "Pharmacist", icon: "💊", gradient: "from-amber-500 to-orange-500" },
+  { value: "billing", label: "Billing", icon: "💰", gradient: "from-indigo-500 to-purple-500" },
 ];
 
-// CUSTOMIZE: Replace with your hospital/organization banner image
-const BANNER_IMAGE = "https://via.placeholder.com/600x400?text=Your+Hospital+Logo+Here";
+// Your hospital banner image - replace with your own
+const BANNER_IMAGE = "https://images.unsplash.com/photo-1576091160550-112173f7f869?w=800&h=400&fit=crop";
 
 export default function Login() {
   const [email, setEmail] = useState("admin@hospital.com");
@@ -138,15 +138,12 @@ export default function Login() {
                   <button
                     key={r.value}
                     type="button"
-                    className={`role-card ${role === r.value ? "active" : ""}`}
-                    style={
-                      role === r.value
-                        ? { borderColor: r.color, backgroundColor: `${r.color}08` }
-                        : {}
-                    }
+                    className={`role-card role-card-${r.value} ${role === r.value ? "active" : ""}`}
                     onClick={() => setRole(r.value)}
                   >
-                    <span className="role-icon">{r.icon}</span>
+                    <span className="role-icon-wrapper">
+                      <span className="role-icon">{r.icon}</span>
+                    </span>
                     <span className="role-label">{r.label}</span>
                   </button>
                 ))}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import type { Invoice } from "../types";
+import "./Billing.css";
 
 /**
  * Billing Component
@@ -92,113 +93,106 @@ export default function Billing() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Billing Area - Invoice Generation</h2>
+      <div className="billing-container">
+        <div className="billing-header">
+          <h1>💰 Billing Area - Invoice Generation</h1>
+          <p>Generate and manage patient invoices</p>
+        </div>
+
+        <div className="billing-layout">
+          {/* Invoice Generation Form */}
+          <div className="invoice-form-card">
+            <div className="card-header">
+              <h3>New Invoice</h3>
+            </div>
+            <div className="card-body">
+              <div className="form-group">
+                <label className="form-label form-label-required">Select Patient</label>
+                <select
+                  className="form-select"
+                  value={patientId}
+                  onChange={(e) => setPatientId(e.target.value)}
+                >
+                  <option value="">Choose patient...</option>
+                  {payablePatients.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="bill-summary">
+                <p className="bill-summary-title">💵 Cost Summary</p>
+                <div className="bill-item">
+                  <span className="bill-label">Consultation Fee</span>
+                  <span className="bill-amount">GH₵ {billItems[0].amount.toFixed(2)}</span>
+                </div>
+                <div className="bill-item">
+                  <span className="bill-label">Medication Charges</span>
+                  <span className="bill-amount">GH₵ {billItems[1].amount.toFixed(2)}</span>
+                </div>
+                <div className="bill-item">
+                  <span className="bill-label">Tax (5%)</span>
+                  <span className="bill-amount">GH₵ {(tax).toFixed(2)}</span>
+                </div>
+                <div className="bill-total">
+                  <span className="bill-total-label">TOTAL</span>
+                  <span className="bill-total-amount">GH₵ {total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button
+                className="btn-generate"
+                disabled={!patientId}
+                onClick={handleGenerateInvoice}
+              >
+                Generate Invoice
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="row row-cards">
-            {/* Generation Form */}
-            <div className="col-md-5">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">New Invoice</h3>
-                </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label className="form-label">Select Patient</label>
-                    <select
-                      className="form-select"
-                      value={patientId}
-                      onChange={(e) => setPatientId(e.target.value)}
-                    >
-                      <option value="">Choose patient...</option>
-                      {payablePatients.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} ({p.id})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="mb-3 bg-light p-3 rounded">
-                    <div className="d-flex justify-content-between mb-1">
-                      <span>Subtotal</span>
-                      <strong>GH₵ {subtotal.toFixed(2)}</strong>
-                    </div>
-                    <div className="d-flex justify-content-between mb-1">
-                      <span>Tax (5%)</span>
-                      <strong>GH₵ {tax.toFixed(2)}</strong>
-                    </div>
-                    <hr className="my-2" />
-                    <div className="d-flex justify-content-between h3 mb-0">
-                      <span>Total</span>
-                      <strong className="text-primary">GH₵ {total.toFixed(2)}</strong>
-                    </div>
-                  </div>
-
-                  <button
-                    className="btn btn-primary w-100"
-                    disabled={!patientId}
-                    onClick={handleGenerateInvoice}
-                  >
-                    Generate GH₵ Invoice
-                  </button>
-                </div>
-              </div>
+          {/* Invoices History */}
+          <div className="invoices-card">
+            <div className="invoices-header">
+              <h3>Billing History ({invoices.length})</h3>
             </div>
-
-            {/* Invoice History */}
-            <div className="col-md-7">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Billing History</h3>
+            <div className="invoices-body">
+              {invoices.length === 0 ? (
+                <div className="no-invoices">
+                  No invoices generated
                 </div>
-                <div className="table-responsive">
-                  <table className="table table-vcenter card-table">
-                    <thead>
-                      <tr>
-                        <th>Invoice #</th>
-                        <th>Patient</th>
-                        <th>Amount</th>
-                        <th className="w-1"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {invoices.length === 0 ? (
-                        <tr>
-                          <td colSpan={4} className="text-center text-muted py-4">
-                            No invoices generated
-                          </td>
-                        </tr>
-                      ) : (
-                        invoices.map((inv) => (
-                          <tr key={inv.id}>
-                            <td className="font-monospace">{inv.invoiceNum}</td>
-                            <td>{inv.patientName}</td>
-                            <td className="text-primary">GH₵ {inv.total.toFixed(2)}</td>
-                            <td>
-                              <button
-                                className="btn btn-sm btn-ghost-primary"
-                                onClick={() => handlePrint(inv)}
-                              >
-                                Print
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              ) : (
+                <ul className="invoices-list">
+                  {invoices.map((inv) => (
+                    <li key={inv.id} className="invoice-item">
+                      <div className="invoice-number">{inv.invoiceNum}</div>
+                      <div className="invoice-patient">{inv.patientName}</div>
+                      <div className="invoice-details">
+                        <div className="invoice-detail-item">
+                          <span className="detail-label">Patient ID</span>
+                          <span className="detail-value">{inv.patientId}</span>
+                        </div>
+                        <div className="invoice-detail-item">
+                          <span className="detail-label">Amount</span>
+                          <span className="detail-value">GH₵ {inv.total.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <div className="invoice-amount">
+                        GH₵ {inv.total.toFixed(2)}
+                      </div>
+                      <div className="invoice-actions">
+                        <button
+                          className="btn-print"
+                          onClick={() => handlePrint(inv)}
+                        >
+                          🖨️ Print
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

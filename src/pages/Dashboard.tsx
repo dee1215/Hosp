@@ -1,26 +1,37 @@
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import "./Dashboard.css";
 
-/**
- * Dashboard Component
- * Shows a high-level overview of the hospital's activity.
- */
 export default function Dashboard() {
   const { user } = useAuth();
   const { patients, vitalsRecords, prescriptions, invoices } = useData();
 
-  // Calculate dynamic stats
   const stats = [
-    { label: "Total Patients", value: patients.length, color: "blue", icon: "👥" },
+    {
+      label: "Total Patients",
+      value: patients.length,
+      icon: "👥",
+      gradient: "from-blue-500 to-cyan-500"
+    },
     {
       label: "Vitals Recorded",
       value: vitalsRecords.length,
-      color: "green",
-      icon: "📋"
+      icon: "📋",
+      gradient: "from-emerald-500 to-teal-500"
     },
-    { label: "Prescriptions", value: prescriptions.length, color: "purple", icon: "💊" },
-    { label: "Billed", value: invoices.length, color: "yellow", icon: "💰" }
+    {
+      label: "Prescriptions",
+      value: prescriptions.length,
+      icon: "💊",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      label: "Total Invoices",
+      value: invoices.length,
+      icon: "💰",
+      gradient: "from-amber-500 to-orange-500"
+    }
   ];
 
   const getRoleDisplay = () => {
@@ -30,86 +41,77 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Welcome back, {getRoleDisplay()}!</h2>
-              <div className="text-muted small mt-1">
-                Here is what&apos;s happening in your hospital today.
-              </div>
-            </div>
+      <div className="dashboard-container">
+        {/* Header */}
+        <div className="dashboard-header">
+          <div>
+            <h1 className="dashboard-title">Welcome back, {getRoleDisplay()}! 👋</h1>
+            <p className="dashboard-subtitle">
+              Here's a summary of your hospital activity today
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="row row-cards">
-            {stats.map((stat, index) => (
-              <div key={index} className="col-sm-6 col-lg-3">
-                <div className="card shadow-sm card-sm">
-                  <div className="card-body">
-                    <div className="row align-items-center">
-                      <div className="col-auto">
-                        <span className={`bg-${stat.color} text-white avatar shadow-sm`}>
-                          {stat.icon}
-                        </span>
-                      </div>
-                      <div className="col">
-                        <div className="font-weight-medium">{stat.value}</div>
-                        <div className="text-muted">{stat.label}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        {/* Stats Grid */}
+        <div className="stats-grid">
+          {stats.map((stat, index) => (
+            <div key={index} className="stat-card">
+              <div className="stat-icon-wrapper">
+                <span className="stat-icon">{stat.icon}</span>
               </div>
-            ))}
+              <div className="stat-content">
+                <p className="stat-label">{stat.label}</p>
+                <p className="stat-value">{stat.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-            <div className="col-12 mt-4">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Recent Patient Activity</h3>
-                </div>
-                <div className="table-responsive">
-                  <table className="table table-vcenter card-table">
-                    <thead>
-                      <tr>
-                        <th>Patient</th>
-                        <th>Status</th>
-                        <th>Details</th>
+        {/* Recent Activity */}
+        <div className="activity-section">
+          <div className="section-header">
+            <h2 className="section-title">Recent Patient Activity</h2>
+            <p className="section-subtitle">Latest 5 patients</p>
+          </div>
+
+          <div className="activity-card">
+            <div className="table-wrapper">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...patients]
+                    .reverse()
+                    .slice(0, 5)
+                    .map((p) => (
+                      <tr key={p.id}>
+                        <td>
+                          <div className="patient-name-cell">
+                            <span className="patient-avatar">👤</span>
+                            <span className="patient-name">{p.name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="patient-id">{p.id}</span>
+                        </td>
+                        <td>
+                          <span className={`status-badge status-${p.status.toLowerCase()}`}>
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="details-cell">
+                          {p.otp ? `OTP: ${p.otp}` : "Waiting for check-in"}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {[...patients]
-                        .reverse()
-                        .slice(0, 5)
-                        .map((p) => (
-                          <tr key={p.id}>
-                            <td>
-                              <div>{p.name}</div>
-                              <div className="text-muted small">ID: {p.id}</div>
-                            </td>
-                            <td>
-                              <span
-                                className={`badge bg-${
-                                  p.status === "Billed" ? "success" : "primary"
-                                }-lt`}
-                              >
-                                {p.status}
-                              </span>
-                            </td>
-                            <td className="text-muted small">
-                              {p.otp
-                                ? `Checked in with OTP: ${p.otp}`
-                                : "Waiting for check-in"}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

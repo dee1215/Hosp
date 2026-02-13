@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import type { Medication, Prescription } from "../types";
+import "./Doctor.css";
 
 /**
  * Doctor Component
@@ -71,179 +72,180 @@ export default function Doctor() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Doctor Area - Diagnosis & Prescription</h2>
-            </div>
-          </div>
+      <div className="doctor-container">
+        <div className="doctor-header">
+          <h1>👨‍⚕️ Doctor Area - Diagnosis & Prescription</h1>
+          <p>Review patient vitals, diagnose, and issue prescriptions</p>
         </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="row row-cards">
-            <div className="col-lg-8">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Patient Consultation</h3>
-                </div>
-                <div className="card-body">
-                  {submitted && (
-                    <div className="alert alert-success mb-3">
-                      Prescription issued successfully!
+        <div className="doctor-layout">
+          {/* Consultation Form */}
+          <div className="consultation-card">
+            <div className="card-header">
+              <h3>Patient Consultation</h3>
+            </div>
+            <div className="card-body">
+              {submitted && (
+                <div className="success-message">✓ Prescription issued successfully</div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label className="form-label form-label-required">Select Patient</label>
+                  <select
+                    className="form-select"
+                    value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                    required
+                  >
+                    <option value="">Choose patient...</option>
+                    {readyPatients.length > 0 ? (
+                      readyPatients.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        No patients ready for consultation
+                      </option>
+                    )}
+                  </select>
+                  {readyPatients.length === 0 && (
+                    <div className="form-text">
+                      No patients with vitals recorded yet. Please ensure patients have been checked in and vitals recorded by the nurse.
                     </div>
                   )}
+                </div>
 
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label className="form-label">Select Patient</label>
-                      <select
-                        className="form-select"
-                        value={patientId}
-                        onChange={(e) => setPatientId(e.target.value)}
-                      >
-                        <option value="">Choose patient...</option>
-                        {readyPatients.length > 0 ? (
-                          readyPatients.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name} ({p.id})
-                            </option>
-                          ))
-                        ) : (
-                          <option value="" disabled>
-                            No patients ready for consultation
-                          </option>
-                        )}
-                      </select>
-                      {readyPatients.length === 0 && (
-                        <div className="form-text text-muted">
-                          No patients with vitals recorded yet. Please ensure patients
-                          have been checked in and vitals recorded by the nurse.
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Nurse's Report Display */}
-                    {nurseReport && (
-                      <div className="alert alert-info mb-3">
-                        <h4 className="alert-title">Nurse&apos;s Report</h4>
-                        <div className="row mt-2">
-                          <div className="col-4">
-                            <strong>Temp:</strong> {nurseReport.temp}°C
-                          </div>
-                          <div className="col-4">
-                            <strong>BP:</strong> {nurseReport.bp}
-                          </div>
-                          <div className="col-4">
-                            <strong>Pulse:</strong> {nurseReport.pulse} bpm
-                          </div>
-                        </div>
-                        <div className="mt-2 text-muted">
-                          <strong>Symptoms:</strong> {nurseReport.symptoms || "None reported"}
-                        </div>
+                {/* Nurse's Report Display */}
+                {nurseReport && (
+                  <div className="vitals-report">
+                    <h4>📋 Nurse's Report</h4>
+                    <div className="vitals-report-grid">
+                      <div className="vitals-report-item">
+                        <span className="vitals-label">Temperature</span>
+                        <span className="vitals-value">{nurseReport.temp}°C</span>
                       </div>
-                    )}
-
-                    <div className="mb-3">
-                      <label className="form-label">Diagnosis</label>
-                      <textarea
-                        className="form-control"
-                        rows={3}
-                        required
-                        value={diagnosis}
-                        onChange={(e) => setDiagnosis(e.target.value)}
-                      ></textarea>
-                    </div>
-
-                    <div className="mb-3">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <label className="form-label mb-0">Prescription (Medications)</label>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-ghost-primary"
-                          onClick={addMedication}
-                        >
-                          + Add Medicine
-                        </button>
+                      <div className="vitals-report-item">
+                        <span className="vitals-label">Blood Pressure</span>
+                        <span className="vitals-value">{nurseReport.bp}</span>
                       </div>
-
-                      {meds.map((m, index) => (
-                        <div key={index} className="row g-2 mb-2 bg-light p-2 rounded">
-                          <div className="col-5">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Medicine Name"
-                              value={m.name}
-                              onChange={(e) => handleMedChange(index, "name", e.target.value)}
-                            />
-                          </div>
-                          <div className="col-3">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Dosage"
-                              value={m.dosage}
-                              onChange={(e) =>
-                                handleMedChange(index, "dosage", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="col-4">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Frequency"
-                              value={m.frequency}
-                              onChange={(e) =>
-                                handleMedChange(index, "frequency", e.target.value)
-                              }
-                            />
-                          </div>
-                        </div>
-                      ))}
+                      <div className="vitals-report-item">
+                        <span className="vitals-label">Pulse</span>
+                        <span className="vitals-value">{nurseReport.pulse} bpm</span>
+                      </div>
                     </div>
+                    <div style={{ background: "white", padding: "8px 12px", borderRadius: "var(--radius-sm)", fontSize: "13px" }}>
+                      <strong>Symptoms:</strong> {nurseReport.symptoms || "None reported"}
+                    </div>
+                  </div>
+                )}
 
-                    <button type="submit" className="btn btn-primary w-100">
-                      Issue Prescription & Forward to Pharmacy
+                <div className="form-group">
+                  <label className="form-label form-label-required">Diagnosis</label>
+                  <textarea
+                    className="form-input"
+                    placeholder="Enter your diagnosis..."
+                    required
+                    value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                  ></textarea>
+                </div>
+
+                <div className="medications-section">
+                  <div className="medications-header">
+                    <span className="medications-title">💊 Medications</span>
+                    <button
+                      type="button"
+                      className="btn-add-medication"
+                      onClick={addMedication}
+                    >
+                      + Add Medicine
                     </button>
-                  </form>
-                </div>
-              </div>
-            </div>
+                  </div>
 
-            {/* Prescription History */}
-            <div className="col-lg-4">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Recent Prescriptions</h3>
-                </div>
-                <div className="card-body p-0">
-                  <div className="list-group list-group-flush">
-                    {prescriptions.length === 0 ? (
-                      <div className="p-4 text-center text-muted">
-                        No prescriptions issued yet
-                      </div>
-                    ) : (
-                      prescriptions.map((p) => (
-                        <div key={p.id} className="list-group-item">
-                          <div className="row">
-                            <div className="col">
-                              <strong>{p.patientName}</strong>
-                              <div className="text-muted small">{p.diagnosis}</div>
-                            </div>
-                            <div className="col-auto text-muted small">
-                              {p.timestamp.split(",")[1]}
-                            </div>
-                          </div>
+                  <div className="medications-list">
+                    {meds.map((m, index) => (
+                      <div key={index} className="medication-item">
+                        <div className="medication-input">
+                          <label>Medicine Name</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., Paracetamol"
+                            value={m.name}
+                            onChange={(e) => handleMedChange(index, "name", e.target.value)}
+                          />
                         </div>
-                      ))
-                    )}
+                        <div className="medication-input">
+                          <label>Dosage</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., 500mg"
+                            value={m.dosage}
+                            onChange={(e) => handleMedChange(index, "dosage", e.target.value)}
+                          />
+                        </div>
+                        <div className="medication-input">
+                          <label>Frequency</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., 3x daily"
+                            value={m.frequency}
+                            onChange={(e) => handleMedChange(index, "frequency", e.target.value)}
+                          />
+                        </div>
+                        {meds.length > 1 && (
+                          <button
+                            type="button"
+                            className="btn-remove-med"
+                            onClick={() => {
+                              const updatedMeds = meds.filter((_, i) => i !== index);
+                              setMeds(updatedMeds);
+                            }}
+                            title="Remove medication"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+
+                <div className="action-buttons">
+                  <button type="submit" className="btn-submit" disabled={!patientId || !diagnosis}>
+                    Issue Prescription
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Patients Ready List */}
+          <div className="patients-ready-card">
+            <div className="card-header">
+              <h3>Ready for Consultation ({readyPatients.length})</h3>
+            </div>
+            <div className="patients-ready-body">
+              {readyPatients.length === 0 ? (
+                <div className="no-patients">
+                  No patients ready for consultation
+                </div>
+              ) : (
+                <ul className="patients-ready-list">
+                  {readyPatients.map((p) => (
+                    <li
+                      key={p.id}
+                      className={`patient-ready-item ${patientId === p.id ? "active" : ""}`}
+                      onClick={() => setPatientId(p.id)}
+                    >
+                      <div className="patient-name">{p.name}</div>
+                      <div className="patient-id">{p.id}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

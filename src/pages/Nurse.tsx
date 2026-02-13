@@ -3,13 +3,14 @@ import { useState, type FormEvent } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import type { VitalsForm, VitalsRecord } from "../types";
+import "./Nurse.css";
 
 /**
  * Nurse Component
  * Where nurses record vital signs and symptoms for patients who have checked in.
  */
 export default function Nurse() {
-  const { patients, vitalsRecords, addVitals } = useData();
+  const { patients, addVitals } = useData();
 
   // Local state for the form
   const [patientId, setPatientId] = useState("");
@@ -57,161 +58,138 @@ export default function Nurse() {
 
   return (
     <Layout>
-      <div className="page-header d-print-none">
-        <div className="container-xl">
-          <div className="row align-items-center">
-            <div className="col">
-              <h2 className="page-title">Nurse Area - Patient Vitals</h2>
-            </div>
-          </div>
+      <div className="nurse-container">
+        <div className="nurse-header">
+          <h1>⚕️ Nurse Area - Vital Signs</h1>
+          <p>Record patient vital signs and observations</p>
         </div>
-      </div>
 
-      <div className="page-body">
-        <div className="container-xl">
-          <div className="row row-cards">
-            {/* Vitals Form */}
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Record Vitals</h3>
-                </div>
-                <div className="card-body">
-                  {submitted && (
-                    <div className="alert alert-success alert-dismissible" role="alert">
-                      <div className="d-flex">
-                        <strong>Success!</strong> &nbsp; Vitals recorded.
-                      </div>
+        <div className="nurse-layout">
+          {/* Vitals Recording Form */}
+          <div className="nurse-form-card">
+            <div className="form-header">
+              <h3>Record Patient Vitals</h3>
+            </div>
+            <div className="form-body">
+              {submitted && (
+                <div className="success-alert">✓ Vitals recorded successfully</div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label className="form-label form-label-required">
+                    Select Patient (Waiting List)
+                  </label>
+                  <select
+                    className="form-select"
+                    value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                    required
+                  >
+                    <option value="">Choose patient...</option>
+                    {waitingPatients.length > 0 ? (
+                      waitingPatients.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        No patients waiting
+                      </option>
+                    )}
+                  </select>
+                  {waitingPatients.length === 0 && (
+                    <div className="form-text">
+                      No patients are currently waiting. Please ensure patients have been checked in via OTP.
                     </div>
                   )}
-
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label className="form-label">Select Patient (Waiting List)</label>
-                      <select
-                        className="form-select"
-                        value={patientId}
-                        onChange={(e) => setPatientId(e.target.value)}
-                      >
-                        <option value="">Choose patient...</option>
-                        {waitingPatients.length > 0 ? (
-                          waitingPatients.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name} ({p.id})
-                            </option>
-                          ))
-                        ) : (
-                          <option value="" disabled>
-                            No patients waiting
-                          </option>
-                        )}
-                      </select>
-                      {waitingPatients.length === 0 && (
-                        <div className="form-text text-muted">
-                          No patients are currently waiting. Please ensure patients have
-                          been checked in via OTP.
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="row">
-                      <div className="col-4">
-                        <div className="mb-3">
-                          <label className="form-label">Temp (°C)</label>
-                          <input
-                            type="number"
-                            step="0.1"
-                            className="form-control"
-                            placeholder="36.5"
-                            value={vitals.temp}
-                            onChange={(e) => setVitals({ ...vitals, temp: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="mb-3">
-                          <label className="form-label">Blood Pressure</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="120/80"
-                            value={vitals.bp}
-                            onChange={(e) => setVitals({ ...vitals, bp: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="mb-3">
-                          <label className="form-label">Pulse (bpm)</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            placeholder="72"
-                            value={vitals.pulse}
-                            onChange={(e) => setVitals({ ...vitals, pulse: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Symptoms & Observations</label>
-                      <textarea
-                        className="form-control"
-                        rows={3}
-                        placeholder="Describe how the patient feels..."
-                        value={vitals.symptoms}
-                        onChange={(e) => setVitals({ ...vitals, symptoms: e.target.value })}
-                      ></textarea>
-                    </div>
-
-                    <div className="form-footer">
-                      <button type="submit" className="btn btn-primary w-100">
-                        Save Vitals & Forward to Doctor
-                      </button>
-                    </div>
-                  </form>
                 </div>
-              </div>
+
+                <div className="vitals-grid">
+                  <div className="vitals-input-group">
+                    <label>Temperature (°C)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      placeholder="36.5"
+                      value={vitals.temp}
+                      onChange={(e) => setVitals({ ...vitals, temp: e.target.value })}
+                    />
+                  </div>
+                  <div className="vitals-input-group">
+                    <label>Blood Pressure</label>
+                    <input
+                      type="text"
+                      placeholder="120/80"
+                      value={vitals.bp}
+                      onChange={(e) => setVitals({ ...vitals, bp: e.target.value })}
+                    />
+                  </div>
+                  <div className="vitals-input-group">
+                    <label>Pulse (bpm)</label>
+                    <input
+                      type="number"
+                      placeholder="72"
+                      value={vitals.pulse}
+                      onChange={(e) => setVitals({ ...vitals, pulse: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Symptoms & Observations</label>
+                  <textarea
+                    placeholder="Describe how the patient feels..."
+                    value={vitals.symptoms}
+                    onChange={(e) => setVitals({ ...vitals, symptoms: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px 14px",
+                      border: "1px solid var(--border-color)",
+                      borderRadius: "var(--radius-sm)",
+                      fontFamily: "inherit",
+                      fontSize: "14px",
+                      minHeight: "80px",
+                      resize: "vertical",
+                    }}
+                  ></textarea>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn-primary">
+                    Save Vitals & Forward to Doctor
+                  </button>
+                </div>
+              </form>
             </div>
+          </div>
 
-            {/* Recent History Table */}
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-header">
-                  <h3 className="card-title">Recent Vitals Log</h3>
+          {/* Waiting Patients List */}
+          <div className="patients-list-card">
+            <div className="form-header">
+              <h3>Waiting Patients ({waitingPatients.length})</h3>
+            </div>
+            <div className="patients-list-body">
+              {waitingPatients.length === 0 ? (
+                <div className="no-patients-message">
+                  No patients waiting for vital signs
                 </div>
-                <div className="table-responsive">
-                  <table className="table table-vcenter card-table text-nowrap">
-                    <thead>
-                      <tr>
-                        <th>Patient</th>
-                        <th>Temp</th>
-                        <th>BP</th>
-                        <th>Time</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {vitalsRecords.length === 0 ? (
-                        <tr>
-                          <td colSpan={4} className="text-center text-muted py-4">
-                            No records yet
-                          </td>
-                        </tr>
-                      ) : (
-                        vitalsRecords.map((r) => (
-                          <tr key={r.id}>
-                            <td>{r.patientName}</td>
-                            <td>{r.temp}°C</td>
-                            <td>{r.bp}</td>
-                            <td className="text-muted small">{r.timestamp.split(",")[1]}</td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              ) : (
+                <ul className="patients-list">
+                  {waitingPatients.map((p) => (
+                    <li
+                      key={p.id}
+                      className={`patient-item ${patientId === p.id ? "active" : ""}`}
+                      onClick={() => setPatientId(p.id)}
+                    >
+                      <div className="patient-name">{p.name}</div>
+                      <div className="patient-id">{p.id}</div>
+                      <span className="patient-status">Waiting</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
