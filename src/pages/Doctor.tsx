@@ -1,7 +1,10 @@
 import { useState, type FormEvent } from "react";
 
 import Layout from "../components/Layout";
+import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import { useToast } from "../context/ToastContext";
+import { filterMedicines } from "../data/medicines";
 import type { Medication, Prescription } from "../types";
 import "./Doctor.css";
 
@@ -17,13 +20,14 @@ export default function Doctor() {
     setPrescriptions,
     updatePatientStatus
   } = useData();
+  const { addToast } = useToast();
 
   // Local state for the form
   const [patientId, setPatientId] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
-  const [meds, setMeds] = useState<Medication[]>([{ name: "", dosage: "", frequency: "" }]);
-  const [submitted, setSubmitted] = useState(false);
+  const [meds, setMeds] = useState<Medication[]>([{ name: "", dosage: "", frequency: "", quantity: 0 }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [medSuggestions, setMedSuggestions] = useState<Record<number, string[]>>({});
 
   // Filter: Patients ready for the doctor
   const readyPatients = patients.filter((p) => p.status === "Vitals Taken");
@@ -42,13 +46,13 @@ export default function Doctor() {
       newErrors.diagnosis = "Diagnosis is required.";
     }
 
-    // Check medications - each filled field should have all three fields filled
+    // Check medications - each filled field should have all four fields filled
     const filledMeds = meds.filter((m) => m.name || m.dosage || m.frequency);
-    const completeMeds = filledMeds.every((m) => m.name && m.dosage && m.frequency);
+    const completeMeds = filledMeds.every((m) => m.name && m.dosage && m.frequency && m.quantity && m.quantity > 0);
 
     if (filledMeds.length > 0 && !completeMeds) {
       newErrors.medications =
-        "For each medication, all fields (name, dosage, frequency) are required.";
+        "For each medication, all fields (name, dosage, frequency, quantity) are required with quantity > 0.";
     }
 
     if (meds.every((m) => !m.name)) {
@@ -60,13 +64,32 @@ export default function Doctor() {
   };
 
   const addMedication = () => {
-    setMeds([...meds, { name: "", dosage: "", frequency: "" }]);
+    setMeds([...meds, { name: "", dosage: "", frequency: "", quantity: 0 }]);
     if (errors.medications) setErrors({ ...errors, medications: "" });
   };
 
   const handleMedChange = (index: number, field: keyof Medication, value: string) => {
-    const updatedMeds = meds.map((m, i) => (i === index ? { ...m, [field]: value } : m));
+    const updatedMeds = meds.map((m, i) => {
+      if (i === index) {
+        if (field === "quantity") {
+          return { ...m, [field]: parseInt(value) || 0 };
+        }
+        return { ...m, [field]: value };
+      }
+      return m;
+    });
     setMeds(updatedMeds);
+
+    // Show suggestions when typing medicine name
+    if (field === "name") {
+      const suggestions = filterMedicines(value);
+      setMedSuggestions((prev) => ({ ...prev, [index]: suggestions }));
+    }
+  };
+
+  const selectMedicineSuggestion = (index: number, medicineName: string) => {
+    handleMedChange(index, "name", medicineName);
+    setMedSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -91,8 +114,7 @@ export default function Doctor() {
     setPrescriptions((prev) => [newPrescription, ...prev]);
     updatePatientStatus(patientId, "Prescribed");
 
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    addToast("Prescription issued successfully", "success");
 
     // Reset form
     setPatientId("");
@@ -116,10 +138,6 @@ export default function Doctor() {
               <h3>Patient Consultation</h3>
             </div>
             <div className="card-body">
-              {submitted && (
-                <div className="success-message">✓ Prescription issued successfully</div>
-              )}
-
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label className="form-label form-label-required">Select Patient</label>
@@ -208,19 +226,34 @@ export default function Doctor() {
 
                   <div className="medications-list">
                     {meds.map((m, index) => (
-                      <div key={index} className={`medication-item ${errors.medications && (!m.name || !m.dosage || !m.frequency) ? "has-error" : ""}`}>
+                      <div key={index} className={`medication-item ${errors.medications && (!m.name || !m.dosage || !m.frequency || !m.quantity) ? "has-error" : ""}`}>
                         <div className="medication-input">
                           <label>Medicine Name</label>
-                          <input
-                            type="text"
-                            placeholder="e.g., Paracetamol"
-                            className={!m.name && errors.medications ? "input-error" : ""}
-                            value={m.name}
-                            onChange={(e) => {
-                              handleMedChange(index, "name", e.target.value);
-                              if (errors.medications) setErrors({ ...errors, medications: "" });
-                            }}
-                          />
+                          <div style={{ position: "relative" }}>
+                            <input
+                              type="text"
+                              placeholder="e.g., Paracetamol"
+                              className={!m.name && errors.medications ? "input-error" : ""}
+                              value={m.name}
+                              onChange={(e) => {
+                                handleMedChange(index, "name", e.target.value);
+                                if (errors.medications) setErrors({ ...errors, medications: "" });
+                              }}
+                            />
+                            {medSuggestions[index] && medSuggestions[index].length > 0 && (
+                              <div className="autocomplete-suggestions">
+                                {medSuggestions[index].map((med) => (
+                                  <div
+                                    key={med}
+                                    className="suggestion-item"
+                                    onClick={() => selectMedicineSuggestion(index, med)}
+                                  >
+                                    {med}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="medication-input">
                           <label>Dosage</label>
@@ -244,6 +277,20 @@ export default function Doctor() {
                             value={m.frequency}
                             onChange={(e) => {
                               handleMedChange(index, "frequency", e.target.value);
+                              if (errors.medications) setErrors({ ...errors, medications: "" });
+                            }}
+                          />
+                        </div>
+                        <div className="medication-input">
+                          <label>Quantity</label>
+                          <input
+                            type="number"
+                            min="1"
+                            placeholder="e.g., 20"
+                            className={!m.quantity && errors.medications ? "input-error" : ""}
+                            value={m.quantity || ""}
+                            onChange={(e) => {
+                              handleMedChange(index, "quantity", e.target.value);
                               if (errors.medications) setErrors({ ...errors, medications: "" });
                             }}
                           />

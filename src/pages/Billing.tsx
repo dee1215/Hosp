@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
+import { useToast } from "../context/ToastContext";
 import type { Invoice } from "../types";
 import "./Billing.css";
 
@@ -11,6 +12,7 @@ import "./Billing.css";
  */
 export default function Billing() {
   const { patients, invoices, setInvoices, updatePatientStatus } = useData();
+  const { addToast } = useToast();
 
   const [patientId, setPatientId] = useState("");
   const [billItems] = useState([
@@ -27,7 +29,7 @@ export default function Billing() {
 
   const handleGenerateInvoice = () => {
     if (!patientId) {
-      alert("Please select a patient first");
+      addToast("Please select a patient first", "error");
       return;
     }
 
@@ -47,6 +49,7 @@ export default function Billing() {
 
     setInvoices((prev) => [newInvoice, ...prev]);
     updatePatientStatus(patientId, "Billed");
+    addToast(`Invoice ${invoiceNum} generated successfully`, "success");
     setPatientId("");
   };
 

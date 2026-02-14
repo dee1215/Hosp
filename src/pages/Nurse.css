@@ -258,6 +258,71 @@
   color: #1e40af;
 }
 
+/* Vitals Records List */
+.vitals-records-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vitals-record-item {
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.vitals-record-item:hover {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.vitals-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.vitals-record-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.vitals-record-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.vitals-record-data {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.vitals-data {
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.vitals-record-symptoms {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 8px;
+  background: white;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary);
+  line-height: 1.4;
+}
+
 .no-patients-message {
   text-align: center;
   padding: 40px 20px;

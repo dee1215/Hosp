@@ -42,6 +42,7 @@ export type Medication = {
   name: string;
   dosage: string;
   frequency: string;
+  quantity?: number; // Number of units to dispense
 };
 
 export type Prescription = {

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
+import { useToast } from "../context/ToastContext";
 import type { Patient } from "../types";
 import "./Patients.css";
 
@@ -11,12 +12,12 @@ import "./Patients.css";
  */
 export default function Patients() {
   const { patients, addPatient, updatePatientStatus } = useData();
+  const { addToast } = useToast();
 
   // Local state for modals and forms
   const [showAddModal, setShowAddModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [successMessage, setSuccessMessage] = useState("");
 
   // OTP state
   const [generatedOtp, setGeneratedOtp] = useState<number | null>(null);
@@ -39,13 +40,8 @@ export default function Patients() {
 
     addPatient(patientToAdd);
     setShowAddModal(false);
-    setSuccessMessage(
-      `Patient ${patientToAdd.name} registered successfully with ID ${patientToAdd.id}`
-    );
+    addToast(`Patient ${patientToAdd.name} registered successfully`, "success");
     setNewPatient({ name: "", age: "", gender: "Male" });
-
-    // Clear success message after 3 seconds
-    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   const startAttendance = (patient: Patient) => {
@@ -63,8 +59,9 @@ export default function Patients() {
       updatePatientStatus(selectedPatient.id, "Waiting", generatedOtp);
       setShowOtpModal(false);
       setEnteredOtp("");
+      addToast(`${selectedPatient.name} checked in successfully`, "success");
     } else {
-      alert("Invalid OTP! Please try again.");
+      addToast("Invalid OTP! Please try again.", "error");
     }
   };
 
@@ -76,9 +73,6 @@ export default function Patients() {
           <p>Register, manage, and track patient check-ins</p>
         </div>
 
-        {successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )}
 
         <div className="patients-actions">
           <button className="btn-register" onClick={() => setShowAddModal(true)}>

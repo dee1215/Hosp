@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
+import { useToast } from "../context/ToastContext";
 import type { InventoryItem } from "../types";
 import "./Pharmacy.css";
 
@@ -11,14 +12,30 @@ import "./Pharmacy.css";
  */
 export default function Pharmacy() {
   const { patients, prescriptions, updatePatientStatus } = useData();
+  const { addToast } = useToast();
 
-  // Local inventory state
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: 1, name: "Paracetamol", stock: 500, unit: "tabs" },
-    { id: 2, name: "Amoxicillin", stock: 120, unit: "tabs" },
-    { id: 3, name: "Ibuprofen", stock: 200, unit: "tabs" },
-    { id: 4, name: "Vitamin C", stock: 300, unit: "tabs" }
-  ]);
+  // Initialize inventory from localStorage or with defaults
+  const [inventory, setInventory] = useState<InventoryItem[]>(() => {
+    const saved = localStorage.getItem("pharmacy_inventory");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Error loading inventory from localStorage:", e);
+      }
+    }
+    return [
+      { id: 1, name: "Paracetamol", stock: 500, unit: "tabs" },
+      { id: 2, name: "Amoxicillin", stock: 120, unit: "tabs" },
+      { id: 3, name: "Ibuprofen", stock: 200, unit: "tabs" },
+      { id: 4, name: "Vitamin C", stock: 300, unit: "tabs" }
+    ];
+  });
+
+  // Save inventory to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("pharmacy_inventory", JSON.stringify(inventory));
+  }, [inventory]);
 
   const [patientId, setPatientId] = useState("");
   const [dispensing, setDispensing] = useState(false);
@@ -34,25 +51,37 @@ export default function Pharmacy() {
     setError("");
 
     if (!patientId) {
-      setError("Please select a patient first.");
+      const msg = "Please select a patient first.";
+      setError(msg);
+      addToast(msg, "error");
       return;
     }
 
     if (!prescription) {
-      setError("This patient does not have a valid prescription.");
+      const msg = "This patient does not have a valid prescription.";
+      setError(msg);
+      addToast(msg, "error");
       return;
     }
 
-    // Simulate stock reduction (e.g., reduce by 10 for each med)
+    // Reduce stock based on actual prescribed quantities
     const updatedInventory = inventory.map((item) => {
-      const isPrescribed = prescription.medications.some((m) =>
-        m.name.toLowerCase().includes(item.name.toLowerCase())
+      const prescribedMed = prescription.medications.find((m) =>
+        m.name.toLowerCase() === item.name.toLowerCase()
       );
-      return isPrescribed ? { ...item, stock: item.stock - 10 } : item;
+      
+      if (prescribedMed && prescribedMed.quantity) {
+        const newStock = Math.max(0, item.stock - prescribedMed.quantity);
+        return { ...item, stock: newStock };
+      }
+      
+      return item;
     });
 
     setInventory(updatedInventory);
     updatePatientStatus(patientId, "Medicines Dispensed");
+
+    addToast("Medicines dispensed successfully", "success");
 
     setDispensing(true);
     setError("");

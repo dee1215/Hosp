@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
+import { useToast } from "../context/ToastContext";
 import type { VitalsForm, VitalsRecord } from "../types";
 import "./Nurse.css";
 
@@ -10,7 +11,8 @@ import "./Nurse.css";
  * Where nurses record vital signs and symptoms for patients who have checked in.
  */
 export default function Nurse() {
-  const { patients, addVitals } = useData();
+  const { patients, vitalsRecords, addVitals } = useData();
+  const { addToast } = useToast();
 
   // Local state for the form
   const [patientId, setPatientId] = useState("");
@@ -20,7 +22,6 @@ export default function Nurse() {
     pulse: "",
     symptoms: ""
   });
-  const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Filter: Only patients waiting after OTP check-in
@@ -81,9 +82,8 @@ export default function Nurse() {
     // Save to global context
     addVitals(record);
 
-    // Feedback to user
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    // Show success toast
+    addToast("Vitals recorded successfully", "success");
 
     // Reset form
     setPatientId("");
@@ -106,10 +106,6 @@ export default function Nurse() {
               <h3>Record Patient Vitals</h3>
             </div>
             <div className="form-body">
-              {submitted && (
-                <div className="success-alert">✓ Vitals recorded successfully</div>
-              )}
-
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label className="form-label form-label-required">
@@ -227,24 +223,29 @@ export default function Nurse() {
           {/* Waiting Patients List */}
           <div className="patients-list-card">
             <div className="form-header">
-              <h3>Waiting Patients ({waitingPatients.length})</h3>
+              <h3>Vitals History</h3>
             </div>
             <div className="patients-list-body">
-              {waitingPatients.length === 0 ? (
+              {vitalsRecords.length === 0 ? (
                 <div className="no-patients-message">
-                  No patients waiting for vital signs
+                  No vitals recorded yet
                 </div>
               ) : (
-                <ul className="patients-list">
-                  {waitingPatients.map((p) => (
-                    <li
-                      key={p.id}
-                      className={`patient-item ${patientId === p.id ? "active" : ""}`}
-                      onClick={() => setPatientId(p.id)}
-                    >
-                      <div className="patient-name">{p.name}</div>
-                      <div className="patient-id">{p.id}</div>
-                      <span className="patient-status">Waiting</span>
+                <ul className="vitals-records-list">
+                  {vitalsRecords.slice(0, 5).map((record) => (
+                    <li key={record.id} className="vitals-record-item">
+                      <div className="vitals-record-header">
+                        <div className="vitals-record-name">{record.patientName}</div>
+                        <div className="vitals-record-time">{record.timestamp}</div>
+                      </div>
+                      <div className="vitals-record-data">
+                        <span className="vitals-data">🌡️ {record.temp}°C</span>
+                        <span className="vitals-data">💓 {record.pulse} bpm</span>
+                        <span className="vitals-data">📊 {record.bp}</span>
+                      </div>
+                      <div className="vitals-record-symptoms">
+                        📝 {record.symptoms}
+                      </div>
                     </li>
                   ))}
                 </ul>
