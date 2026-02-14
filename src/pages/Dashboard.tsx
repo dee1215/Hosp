@@ -26,68 +26,67 @@ export default function Dashboard() {
       trendType: "positive",
       icon: "👥",
       color: "from-blue-500 to-cyan-500",
-      subtext: "Active patients"
+      subtext: `${patients.filter(p => p.status !== "Billed").length} active`
     },
     {
-      label: "Bed Occupancy",
-      value: "87%",
-      trend: "+3%",
+      label: "Vitals Recorded",
+      value: vitalsRecords.length,
+      trend: "+8%",
       trendType: "positive",
-      icon: "🛏️",
+      icon: "⚕️",
       color: "from-emerald-500 to-teal-500",
-      subtext: "62 of 78 beds"
+      subtext: `${patients.filter(p => p.status === "Vitals Taken").length} ready for doctor`
     },
     {
-      label: "Avg Wait Time",
-      value: "12 min",
-      trend: "-4%",
+      label: "Prescriptions",
+      value: prescriptions.length,
+      trend: "+6%",
       trendType: "positive",
-      icon: "⏱️",
+      icon: "💊",
       color: "from-purple-500 to-pink-500",
-      subtext: "Emergency: 5min"
+      subtext: `${patients.filter(p => p.status === "Prescribed").length} awaiting pharmacy`
     },
     {
       label: "Monthly Revenue",
-      value: `$${(invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0)).toLocaleString()}`,
+      value: `GHC ${(invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0)).toLocaleString()}`,
       trend: "+15%",
       trendType: "positive",
       icon: "💰",
       color: "from-amber-500 to-orange-500",
-      subtext: "YTD: $485K"
+      subtext: "YTD: GHC 485K"
     }
   ];
 
-  // Chart Data: Patient Admission Trend (Last 7 days)
-  const patientTrendData = [
-    { day: "Mon", admissions: 18, discharges: 8, emergency: 5 },
-    { day: "Tue", admissions: 22, discharges: 9, emergency: 4 },
-    { day: "Wed", admissions: 16, discharges: 7, emergency: 6 },
-    { day: "Thu", admissions: 25, discharges: 10, emergency: 5 },
-    { day: "Fri", admissions: 20, discharges: 8, emergency: 4 },
-    { day: "Sat", admissions: 14, discharges: 6, emergency: 3 },
-    { day: "Sun", admissions: 12, discharges: 5, emergency: 2 }
-  ];
+  // Chart Data: Patient Status Distribution
+  const patientStatusData = useMemo(() => {
+    const statusCounts: Record<string, number> = {};
+    patients.forEach(p => {
+      statusCounts[p.status] = (statusCounts[p.status] || 0) + 1;
+    });
+    return Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
+  }, [patients]);
 
-  // Chart Data: Vitals Distribution
-  const vitalsData = useMemo(() => {
+  // Chart Data: Patient Journey Progress
+  const patientJourneyData = useMemo(() => {
     return [
-      { name: "Normal", value: Math.floor(vitalsRecords.length * 0.65) + 45 },
-      { name: "Elevated", value: Math.floor(vitalsRecords.length * 0.25) + 18 },
-      { name: "High", value: Math.floor(vitalsRecords.length * 0.10) + 8 }
-    ];
-  }, [vitalsRecords]);
+      { stage: "Registered", count: patients.filter(p => p.status === "Registered").length },
+      { stage: "Waiting", count: patients.filter(p => p.status === "Waiting").length },
+      { stage: "Vitals Taken", count: patients.filter(p => p.status === "Vitals Taken").length },
+      { stage: "Prescribed", count: patients.filter(p => p.status === "Prescribed").length },
+      { stage: "Medicines Dispensed", count: patients.filter(p => p.status === "Medicines Dispensed").length },
+      { stage: "Billed", count: patients.filter(p => p.status === "Billed").length }
+    ].filter(item => item.count > 0);
+  }, [patients]);
 
-  // Chart Data: Department Stats (Comprehensive with realistic medical data)
-  const departmentData = [
-    { dept: "Cardiology", patients: 34, appointments: 48, beds: 12, occupied: 9, avgWait: 15 },
-    { dept: "Pediatrics", patients: 28, appointments: 42, beds: 10, occupied: 7, avgWait: 12 },
-    { dept: "Orthopedics", patients: 22, appointments: 35, beds: 8, occupied: 6, avgWait: 18 },
-    { dept: "Neurology", patients: 18, appointments: 28, beds: 6, occupied: 4, avgWait: 14 },
-    { dept: "Pulmonology", patients: 15, appointments: 25, beds: 5, occupied: 3, avgWait: 10 },
-    { dept: "General Surgery", patients: 26, appointments: 38, beds: 10, occupied: 8, avgWait: 16 },
-    { dept: "Emergency", patients: 42, appointments: 65, beds: 15, occupied: 14, avgWait: 5 },
-    { dept: "ICU", patients: 12, appointments: 15, beds: 8, occupied: 7, avgWait: 2 }
-  ];
+  // Chart Data: Activity Summary
+  const activityData = useMemo(() => {
+    return [
+      { activity: "Total Patients", count: patients.length },
+      { activity: "Vitals Recorded", count: vitalsRecords.length },
+      { activity: "Prescriptions", count: prescriptions.length },
+      { activity: "Invoices", count: invoices.length }
+    ];
+  }, [patients, vitalsRecords, prescriptions, invoices]);
 
   // Filtered and Sorted Patients Table
   const filteredPatients = useMemo(() => {
@@ -156,51 +155,47 @@ export default function Dashboard() {
         <div className="charts-section">
           <div className="chart-container">
             <div className="chart-header">
-              <h3>Patient Admission Trends</h3>
-              <span className="chart-period">Last 7 Days</span>
+              <h3>Patient Journey Progress</h3>
+              <span className="chart-period">Current Flow</span>
             </div>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={patientTrendData}>
+              <BarChart data={patientJourneyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="day" stroke="#6b7280" />
+                <XAxis dataKey="stage" stroke="#6b7280" angle={-20} textAnchor="end" height={80} />
                 <YAxis stroke="#6b7280" />
                 <Tooltip contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px", color: "#fff" }} />
                 <Legend />
-                <Line type="monotone" dataKey="admissions" stroke="#06b6d4" strokeWidth={3} dot={{ fill: "#06b6d4", r: 6 }} name="Admissions" />
-                <Line type="monotone" dataKey="discharges" stroke="#10b981" strokeWidth={3} dot={{ fill: "#10b981", r: 6 }} name="Discharges" />
-                <Line type="monotone" dataKey="emergency" stroke="#ef4444" strokeWidth={2} dot={{ fill: "#ef4444", r: 5 }} name="Emergency" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="chart-container">
-            <div className="chart-header">
-              <h3>Department Statistics</h3>
-              <span className="chart-period">Current Status</span>
-            </div>
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={departmentData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                <XAxis dataKey="dept" stroke="#6b7280" angle={-45} textAnchor="end" height={100} />
-                <YAxis stroke="#6b7280" />
-                <Tooltip contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px", color: "#fff" }} />
-                <Legend />
-                <Bar dataKey="patients" fill="#8b5cf6" radius={[8, 8, 0, 0]} name="Patients" />
-                <Bar dataKey="appointments" fill="#f59e0b" radius={[8, 8, 0, 0]} name="Appointments" />
-                <Bar dataKey="occupied" fill="#06b6d4" radius={[8, 8, 0, 0]} name="Beds Occupied" />
+                <Bar dataKey="count" fill="#06b6d4" radius={[8, 8, 0, 0]} name="Patients" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           <div className="chart-container">
             <div className="chart-header">
-              <h3>Vitals Distribution</h3>
+              <h3>Hospital Activity Summary</h3>
+              <span className="chart-period">Real-Time Data</span>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={activityData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+                <XAxis dataKey="activity" stroke="#6b7280" />
+                <YAxis stroke="#6b7280" />
+                <Tooltip contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px", color: "#fff" }} />
+                <Legend />
+                <Bar dataKey="count" fill="#8b5cf6" radius={[8, 8, 0, 0]} name="Count" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="chart-container">
+            <div className="chart-header">
+              <h3>Patient Status Distribution</h3>
               <span className="chart-period">Overview</span>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={vitalsData}
+                  data={patientStatusData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -209,9 +204,10 @@ export default function Dashboard() {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  <Cell fill="#06b6d4" />
-                  <Cell fill="#f59e0b" />
-                  <Cell fill="#ef4444" />
+                  {patientStatusData.map((entry, index) => {
+                    const colors = ["#06b6d4", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#22c55e"];
+                    return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                  })}
                 </Pie>
                 <Tooltip contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px", color: "#fff" }} />
               </PieChart>
