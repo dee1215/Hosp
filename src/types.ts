@@ -68,6 +68,8 @@ export type InventoryItem = {
   name: string;
   stock: number;
   unit: string;
+  price: number;
+  description?: string;
 };
 
 export type StaffMember = {

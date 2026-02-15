@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from "react";
 
 import Layout from "../components/Layout";
-import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
 import { useToast } from "../context/ToastContext";
-import { filterMedicines } from "../data/medicines";
+import { filterMedicines, type BasicMedicine } from "../data/medicines";
 import type { Medication, Prescription } from "../types";
 import "./Doctor.css";
 
@@ -16,7 +15,6 @@ export default function Doctor() {
   const {
     patients,
     vitalsRecords,
-    prescriptions,
     setPrescriptions,
     updatePatientStatus
   } = useData();
@@ -27,7 +25,7 @@ export default function Doctor() {
   const [diagnosis, setDiagnosis] = useState("");
   const [meds, setMeds] = useState<Medication[]>([{ name: "", dosage: "", frequency: "", quantity: 0 }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [medSuggestions, setMedSuggestions] = useState<Record<number, string[]>>({});
+  const [medSuggestions, setMedSuggestions] = useState<Record<number, BasicMedicine[]>>({});
 
   // Filter: Patients ready for the doctor
   const readyPatients = patients.filter((p) => p.status === "Vitals Taken");
@@ -244,11 +242,11 @@ export default function Doctor() {
                               <div className="autocomplete-suggestions">
                                 {medSuggestions[index].map((med) => (
                                   <div
-                                    key={med}
+                                    key={med.name}
                                     className="suggestion-item"
-                                    onClick={() => selectMedicineSuggestion(index, med)}
+                                    onClick={() => selectMedicineSuggestion(index, med.name)}
                                   >
-                                    {med}
+                                    {med.name} <span style={{ fontSize: "0.85rem", color: "#666" }}>GH₵ {med.price.toFixed(2)}</span>
                                   </div>
                                 ))}
                               </div>

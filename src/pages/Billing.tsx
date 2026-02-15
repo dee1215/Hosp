@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import { useToast } from "../context/ToastContext";
+import { getMedicinePrice } from "../data/medicines";
 import type { Invoice } from "../types";
 import "./Billing.css";
 
@@ -11,17 +12,34 @@ import "./Billing.css";
  * Generates final invoices for patients after they have received their medications.
  */
 export default function Billing() {
-  const { patients, invoices, setInvoices, updatePatientStatus } = useData();
+  const { patients, invoices, setInvoices, updatePatientStatus, prescriptions } = useData();
   const { addToast } = useToast();
 
   const [patientId, setPatientId] = useState("");
-  const [billItems] = useState([
-    { desc: "Consultation Fee", amount: 50 },
-    { desc: "Medication Charges", amount: 120 }
-  ]);
 
   // Filter: Patients who have finished pharmacy stage
   const payablePatients = patients.filter((p) => p.status === "Medicines Dispensed");
+
+  // Calculate medication charges based on patient's prescription
+  const getMedicationCost = useCallback((pId: string): number => {
+    const prescription = prescriptions.find((p) => p.patientId === pId);
+    if (!prescription) return 0;
+
+    return prescription.medications.reduce((total, med) => {
+      const price = getMedicinePrice(med.name);
+      const quantity = med.quantity || 1;
+      return total + (price * quantity);
+    }, 0);
+  }, [prescriptions]);
+
+  const consultationFee = 50;
+  
+  const medicationCost = useMemo(() => getMedicationCost(patientId), [patientId, getMedicationCost]);
+  
+  const billItems = useMemo(() => [
+    { desc: "Consultation Fee", amount: consultationFee },
+    { desc: "Medication Charges", amount: medicationCost }
+  ], [medicationCost]);
 
   const subtotal = billItems.reduce((acc, item) => acc + item.amount, 0);
   const tax = subtotal * 0.05;
@@ -54,8 +72,35 @@ export default function Billing() {
   };
 
   const handlePrint = (inv: Invoice) => {
+    const prescription = prescriptions.find((p) => p.patientId === inv.patientId);
+    const medicationCost = prescription
+      ? prescription.medications.reduce((total, med) => {
+          const price = getMedicinePrice(med.name);
+          const quantity = med.quantity || 1;
+          return total + (price * quantity);
+        }, 0)
+      : 0;
+
+    const consultFee = consultationFee;
+    const taxAmount = (consultFee + medicationCost) * 0.05;
+
     const win = window.open("", "", "width=800,height=600");
     if (!win) return;
+
+    // Build medication table rows
+    const medicationRows = prescription
+      ? prescription.medications
+          .map((med) => {
+            const price = getMedicinePrice(med.name);
+            const quantity = med.quantity || 1;
+            const itemTotal = price * quantity;
+            return `<tr>
+              <td>${med.name} (${med.dosage}, Qty: ${quantity})</td>
+              <td>GH₵ ${itemTotal.toFixed(2)}</td>
+            </tr>`;
+          })
+          .join("")
+      : "<tr><td colspan='2'>No medications</td></tr>";
 
     win.document.write(`
       <html>
@@ -64,10 +109,17 @@ export default function Billing() {
           <style>
             body { font-family: sans-serif; padding: 40px; }
             .header { text-align: center; margin-bottom: 40px; }
-            .details { margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-            .total { font-size: 1.5rem; text-align: right; margin-top: 30px; }
+            .details { margin-bottom: 20px; font-size: 0.95rem; }
+            .details p { margin: 5px 0; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+            th { background-color: #f5f5f5; font-weight: bold; }
+            .section-title { margin-top: 20px; margin-bottom: 10px; font-weight: bold; }
+            .summary { margin-top: 20px; text-align: right; }
+            .summary-row { display: flex; justify-content: flex-end; padding: 5px 0; }
+            .summary-label { min-width: 150px; }
+            .summary-amount { min-width: 100px; text-align: right; font-weight: bold; }
+            .total-row { border-top: 2px solid #333; padding-top: 10px; margin-top: 10px; font-size: 1.2rem; }
           </style>
         </head>
         <body>
@@ -80,14 +132,31 @@ export default function Billing() {
             <p><strong>Patient ID:</strong> ${inv.patientId}</p>
             <p><strong>Date:</strong> ${inv.timestamp}</p>
           </div>
+
+          <div class="section-title">📋 Medications Dispensed</div>
+          <table>
+            <thead>
+              <tr><th>Medicine (Dosage, Qty)</th><th>Cost</th></tr>
+            </thead>
+            <tbody>
+              ${medicationRows}
+            </tbody>
+          </table>
+
+          <div class="section-title">💳 Cost Breakdown</div>
           <table>
             <tr><th>Description</th><th>Amount</th></tr>
-            <tr><td>Consultation Fee</td><td>GH₵ 50.00</td></tr>
-            <tr><td>Medication Charges</td><td>GH₵ 120.00</td></tr>
-            <tr><td>Tax (5%)</td><td>GH₵ ${(inv.total - 170).toFixed(2)}</td></tr>
+            <tr><td>Consultation Fee</td><td>GH₵ ${consultFee.toFixed(2)}</td></tr>
+            <tr><td>Medication Charges</td><td>GH₵ ${medicationCost.toFixed(2)}</td></tr>
+            <tr><td>Subtotal</td><td>GH₵ ${(consultFee + medicationCost).toFixed(2)}</td></tr>
+            <tr><td>Tax (5%)</td><td>GH₵ ${taxAmount.toFixed(2)}</td></tr>
           </table>
-          <div class="total">
-            <strong>TOTAL AMOUNT: GH₵ ${inv.total.toFixed(2)}</strong>
+
+          <div class="summary">
+            <div class="summary-row total-row">
+              <span class="summary-label">TOTAL AMOUNT:</span>
+              <span class="summary-amount">GH₵ ${inv.total.toFixed(2)}</span>
+            </div>
           </div>
         </body>
       </html>
