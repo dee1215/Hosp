@@ -1,6 +1,6 @@
 .staff-container {
-  padding: 24px;
-  background: linear-gradient(135deg, #ecfeff 0%, #e0f2fe 40%, #f8fafc 100%);
+  padding: 32px;
+  background: #f5f7fa;
   min-height: calc(100vh - 70px - 80px);
 }
 

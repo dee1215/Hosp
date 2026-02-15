@@ -1,8 +1,8 @@
 /* Dashboard Container & Layout */
 .dashboard-container {
   width: 100%;
-  padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e2ecf9 45%, #ffffff 100%);
+  padding: 2.25rem;
+  background: #f5f7fa;
   min-height: calc(100vh - 120px);
   color: var(--text-primary);
 }

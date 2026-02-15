@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import { useToast } from "../context/ToastContext";
-import { filterMedicines, type BasicMedicine } from "../data/medicines";
+import { filterMedicines, commonMedicines, type BasicMedicine } from "../data/medicines";
 import type { Medication, Prescription } from "../types";
 import "./Doctor.css";
 
@@ -66,28 +66,38 @@ export default function Doctor() {
     if (errors.medications) setErrors({ ...errors, medications: "" });
   };
 
-  const handleMedChange = (index: number, field: keyof Medication, value: string) => {
+  const handleMedChange = (index: number, field: keyof Medication, value: string | undefined) => {
+    const safeValue = value ?? "";
     const updatedMeds = meds.map((m, i) => {
       if (i === index) {
         if (field === "quantity") {
-          return { ...m, [field]: parseInt(value) || 0 };
+          const num = parseInt(safeValue, 10);
+          return { ...m, [field]: Number.isNaN(num) ? 0 : num };
         }
-        return { ...m, [field]: value };
+        return { ...m, [field]: safeValue };
       }
       return m;
     });
     setMeds(updatedMeds);
 
-    // Show suggestions when typing medicine name
+    // Show suggestions when typing medicine name (or all if clearing)
     if (field === "name") {
-      const suggestions = filterMedicines(value);
-      setMedSuggestions((prev) => ({ ...prev, [index]: suggestions }));
+      showMedicineSuggestions(index, safeValue);
     }
   };
 
   const selectMedicineSuggestion = (index: number, medicineName: string) => {
     handleMedChange(index, "name", medicineName);
     setMedSuggestions((prev) => ({ ...prev, [index]: [] }));
+  };
+
+  const showMedicineSuggestions = (index: number, value: string | undefined) => {
+    const q = (value ?? "").trim();
+    if (q) {
+      setMedSuggestions((prev) => ({ ...prev, [index]: filterMedicines(q) }));
+    } else {
+      setMedSuggestions((prev) => ({ ...prev, [index]: commonMedicines.slice(0, 8) }));
+    }
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -117,7 +127,7 @@ export default function Doctor() {
     // Reset form
     setPatientId("");
     setDiagnosis("");
-    setMeds([{ name: "", dosage: "", frequency: "" }]);
+    setMeds([{ name: "", dosage: "", frequency: "", quantity: 0 }]);
     setErrors({});
   };
 
@@ -130,15 +140,17 @@ export default function Doctor() {
         </div>
 
         <div className="doctor-layout">
-          {/* Consultation Form */}
-          <div className="consultation-card">
-            <div className="card-header">
+          {/* Consultation Form - same structure as Nurse "Record Patient Vitals" */}
+          <div className="doctor-form-card">
+            <div className="form-header">
               <h3>Patient Consultation</h3>
             </div>
-            <div className="card-body">
+            <div className="form-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label className="form-label form-label-required">Select Patient</label>
+                  <label className="form-label form-label-required">
+                    Select Patient (Ready for Consultation)
+                  </label>
                   <select
                     className={`form-select ${errors.patientId ? "input-error" : ""}`}
                     value={patientId}
@@ -237,9 +249,13 @@ export default function Doctor() {
                                 handleMedChange(index, "name", e.target.value);
                                 if (errors.medications) setErrors({ ...errors, medications: "" });
                               }}
+                              onFocus={() => showMedicineSuggestions(index, m.name ?? "")}
                             />
                             {medSuggestions[index] && medSuggestions[index].length > 0 && (
-                              <div className="autocomplete-suggestions">
+                              <div
+                                className="autocomplete-suggestions"
+                                onWheel={(e) => e.stopPropagation()}
+                              >
                                 {medSuggestions[index].map((med) => (
                                   <div
                                     key={med.name}
@@ -300,6 +316,14 @@ export default function Doctor() {
                             onClick={() => {
                               const updatedMeds = meds.filter((_, i) => i !== index);
                               setMeds(updatedMeds);
+                              setMedSuggestions((prev) => {
+                                const next: Record<number, BasicMedicine[]> = {};
+                                updatedMeds.forEach((_, i) => {
+                                  const oldIdx = i < index ? i : i + 1;
+                                  if (prev[oldIdx] !== undefined) next[i] = prev[oldIdx];
+                                });
+                                return next;
+                              });
                             }}
                             title="Remove medication"
                           >
@@ -311,8 +335,8 @@ export default function Doctor() {
                   </div>
                 </div>
 
-                <div className="action-buttons">
-                  <button type="submit" className="btn-submit">
+                <div className="form-actions">
+                  <button type="submit" className="btn-primary">
                     Issue Prescription
                   </button>
                 </div>
@@ -320,14 +344,14 @@ export default function Doctor() {
             </div>
           </div>
 
-          {/* Patients Ready List */}
-          <div className="patients-ready-card">
-            <div className="card-header">
+          {/* Ready for Consultation List - same structure as Nurse "Vitals History" */}
+          <div className="patients-list-card">
+            <div className="form-header">
               <h3>Ready for Consultation ({readyPatients.length})</h3>
             </div>
-            <div className="patients-ready-body">
+            <div className="patients-list-body">
               {readyPatients.length === 0 ? (
-                <div className="no-patients">
+                <div className="no-patients-message">
                   No patients ready for consultation
                 </div>
               ) : (
@@ -335,7 +359,7 @@ export default function Doctor() {
                   {readyPatients.map((p) => (
                     <li
                       key={p.id}
-                      className={`patient-ready-item ${patientId === p.id ? "active" : ""}`}
+                      className={`patient-item ${patientId === p.id ? "active" : ""}`}
                       onClick={() => setPatientId(p.id)}
                     >
                       <div className="patient-name">{p.name}</div>

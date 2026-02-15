@@ -1,8 +1,8 @@
 /* Nurse Page Styles */
 
 .nurse-container {
-  padding: 24px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 32px;
+  background: #f5f7fa;
   min-height: calc(100vh - 70px - 280px);
 }
 

@@ -182,97 +182,17 @@ export default function Pharmacy() {
           {/* Inventory Table */}
           <div className="inventory-card">
             <div className="card-header">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className="card-header-row">
                 <h3>💊 Medicine Inventory</h3>
                 <button
+                  type="button"
                   className="btn-add-medication"
-                  onClick={() => setShowAddForm(!showAddForm)}
-                  style={{ fontSize: "12px", padding: "6px 12px" }}
+                  onClick={() => setShowAddForm(true)}
                 >
-                  {showAddForm ? "Cancel" : "+ Add Medicine"}
+                  + Add Medicine
                 </button>
               </div>
             </div>
-
-            {/* Add New Medicine Form */}
-            {showAddForm && (
-              <div style={{ padding: "16px", borderBottom: "1px solid var(--border)", background: "#f9fafb" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", fontWeight: "600", marginBottom: "6px", display: "block" }}>
-                      Medicine Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Paracetamol 500mg"
-                      value={newMedicine.name}
-                      onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
-                      style={{ width: "100%", padding: "8px 12px", fontSize: "13px", border: "1px solid var(--border)", borderRadius: "6px" }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", fontWeight: "600", marginBottom: "6px", display: "block" }}>
-                      Price (GHC)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="0.00"
-                      value={newMedicine.price}
-                      onChange={(e) => setNewMedicine({ ...newMedicine, price: parseFloat(e.target.value) || 0 })}
-                      min="0"
-                      step="0.05"
-                      style={{ width: "100%", padding: "8px 12px", fontSize: "13px", border: "1px solid var(--border)", borderRadius: "6px" }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", fontWeight: "600", marginBottom: "6px", display: "block" }}>
-                      Stock
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="100"
-                      value={newMedicine.stock}
-                      onChange={(e) => setNewMedicine({ ...newMedicine, stock: parseInt(e.target.value) || 0 })}
-                      min="0"
-                      style={{ width: "100%", padding: "8px 12px", fontSize: "13px", border: "1px solid var(--border)", borderRadius: "6px" }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", fontWeight: "600", marginBottom: "6px", display: "block" }}>
-                      Unit
-                    </label>
-                    <select
-                      value={newMedicine.unit}
-                      onChange={(e) => setNewMedicine({ ...newMedicine, unit: e.target.value })}
-                      style={{ width: "100%", padding: "8px 12px", fontSize: "13px", border: "1px solid var(--border)", borderRadius: "6px" }}
-                    >
-                      <option>tabs</option>
-                      <option>capsules</option>
-                      <option>ml</option>
-                      <option>bottles</option>
-                      <option>injection</option>
-                    </select>
-                  </div>
-                </div>
-                <button
-                  onClick={handleAddMedicine}
-                  style={{
-                    width: "100%",
-                    marginTop: "12px",
-                    padding: "10px",
-                    background: "var(--primary)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                  }}
-                >
-                  Add Medicine
-                </button>
-              </div>
-            )}
 
             <div className="table-wrapper">
               <table className="inventory-table">
@@ -393,6 +313,109 @@ export default function Pharmacy() {
           </div>
         </div>
       </div>
+
+      {/* Add Medicine Modal */}
+      {showAddForm && (
+        <div
+          className="pharmacy-modal-overlay"
+          onClick={() => setShowAddForm(false)}
+          role="presentation"
+        >
+          <div
+            className="pharmacy-modal-card"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-medicine-title"
+          >
+            <div className="pharmacy-modal-header">
+              <h3 id="add-medicine-title">Add New Medicine</h3>
+              <button
+                type="button"
+                className="pharmacy-modal-close"
+                onClick={() => setShowAddForm(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleAddMedicine();
+              }}
+            >
+              <div className="pharmacy-modal-body">
+                <div className="pharmacy-form-group">
+                  <label className="pharmacy-form-label pharmacy-form-label-required">
+                    Medicine Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Paracetamol 500mg"
+                    value={newMedicine.name}
+                    onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
+                    className="pharmacy-form-input"
+                  />
+                </div>
+                <div className="pharmacy-form-row">
+                  <div className="pharmacy-form-group">
+                    <label className="pharmacy-form-label pharmacy-form-label-required">
+                      Price (GHC)
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      value={newMedicine.price || ""}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, price: parseFloat(e.target.value) || 0 })}
+                      min="0"
+                      step="0.05"
+                      className="pharmacy-form-input"
+                    />
+                  </div>
+                  <div className="pharmacy-form-group">
+                    <label className="pharmacy-form-label">Stock</label>
+                    <input
+                      type="number"
+                      placeholder="100"
+                      value={newMedicine.stock}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, stock: parseInt(e.target.value, 10) || 0 })}
+                      min="0"
+                      className="pharmacy-form-input"
+                    />
+                  </div>
+                </div>
+                <div className="pharmacy-form-group">
+                  <label className="pharmacy-form-label">Unit</label>
+                  <select
+                    value={newMedicine.unit}
+                    onChange={(e) => setNewMedicine({ ...newMedicine, unit: e.target.value })}
+                    className="pharmacy-form-input"
+                  >
+                    <option value="tabs">tabs</option>
+                    <option value="capsules">capsules</option>
+                    <option value="ml">ml</option>
+                    <option value="bottles">bottles</option>
+                    <option value="injection">injection</option>
+                  </select>
+                </div>
+              </div>
+              <div className="pharmacy-modal-footer">
+                <button
+                  type="button"
+                  className="pharmacy-btn-cancel"
+                  onClick={() => setShowAddForm(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="pharmacy-btn-submit">
+                  Add Medicine
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
