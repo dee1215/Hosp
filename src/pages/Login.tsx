@@ -85,16 +85,8 @@ export default function LoginPage() {
 
       {/* Split Body */}
       <div className="login-body">
-        {/* Left Side - Image + Welcome Brand */}
+        {/* Left Side - Welcome Brand + Image */}
         <section className="login-left">
-          <div className="login-left-image-wrapper">
-            <img
-              src={HERO_IMAGE}
-              alt="Modern hospital corridor"
-              className="login-left-image"
-            />
-          </div>
-
           <div className="login-left-brand">
             <div className="login-left-logo">
               <span className="login-left-logo-mark">
@@ -112,6 +104,14 @@ export default function LoginPage() {
                 and billing with ease and security.
               </p>
             </div>
+          </div>
+
+          <div className="login-left-image-wrapper">
+            <img
+              src={HERO_IMAGE}
+              alt="Modern hospital corridor"
+              className="login-left-image"
+            />
           </div>
         </section>
 
