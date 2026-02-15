@@ -383,80 +383,223 @@
   .invoice-form-card {
     position: static;
   }
+
+  .billing-container {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .billing-container {
-    padding: 16px;
+    padding: 12px;
+  }
+
+  .billing-header {
+    margin-bottom: 20px;
   }
 
   .billing-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
-  .bill-summary {
-    padding: 12px;
+  .billing-header p {
+    font-size: 13px;
+  }
+
+  .billing-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .invoice-form-card,
+  .invoices-card {
+    border-radius: 10px;
+  }
+
+  .card-header {
+    padding: 16px;
+  }
+
+  .card-header h3 {
+    font-size: 15px;
   }
 
   .card-body {
     padding: 16px;
   }
 
-  .invoice-details {
-    grid-template-columns: 1fr;
+  .bill-summary {
+    padding: 12px;
+    border-radius: 8px;
   }
 
-  .invoices-body {
-    max-height: 400px;
+  .summary-row {
+    font-size: 13px;
   }
-}
 
-@media (max-width: 480px) {
-  .billing-header h1 {
-    font-size: 20px;
+  .form-group {
+    margin-bottom: 14px;
   }
 
   .form-label {
     font-size: 13px;
+    margin-bottom: 6px;
   }
 
   .form-input,
   .form-select {
-    font-size: 13px;
-    padding: 8px 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
   }
 
   .btn-generate {
+    width: 100%;
     padding: 10px 16px;
     font-size: 13px;
+    min-height: 40px;
+  }
+
+  .invoice-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .invoices-body {
+    max-height: 350px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .invoices-table {
+    font-size: 12px;
+    min-width: 600px;
+  }
+
+  .invoices-table th {
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .invoices-table td {
+    padding: 10px 8px;
   }
 
   .invoice-item {
     padding: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .billing-container {
+    padding: 10px;
   }
 
-  .invoice-number {
+  .billing-header h1 {
+    font-size: 18px;
+  }
+
+  .billing-header p {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .billing-layout {
+    gap: 12px;
+  }
+
+  .card-header {
+    padding: 12px;
+  }
+
+  .card-header h3 {
     font-size: 14px;
   }
 
-  .invoice-patient {
+  .card-body {
+    padding: 12px;
+  }
+
+  .bill-summary {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .summary-row {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .summary-label,
+  .summary-amount {
+    font-size: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
     font-size: 13px;
+    min-height: 36px;
+  }
+
+  .btn-generate {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+
+  .invoice-details {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .invoice-detail-item {
+    font-size: 12px;
+  }
+
+  .invoices-body {
+    max-height: 300px;
+  }
+
+  .invoices-table {
+    font-size: 11px;
+    min-width: 500px;
+  }
+
+  .invoices-table th {
+    padding: 8px 6px;
+    font-size: 10px;
+  }
+
+  .invoices-table td {
+    padding: 8px 6px;
+  }
+
+  .invoice-number {
+    font-size: 11px;
+  }
+
+  .invoice-patient {
+    font-size: 11px;
   }
 
   .invoice-amount {
-    font-size: 13px;
+    font-size: 11px;
   }
 
-  .invoice-actions {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .btn-print,
-  .btn-download {
-    padding: 8px 12px;
-    font-size: 12px;
+  .invoice-item {
+    padding: 10px;
+    margin-bottom: 6px;
   }
 }
 

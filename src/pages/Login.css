@@ -332,59 +332,186 @@
 
 @media (max-width: 768px) {
   .login-navbar {
-    padding-inline: 24px;
+    padding-inline: 20px;
+  }
+
+  .login-navbar-inner {
+    gap: 12px;
+  }
+
+  .login-navbar-logo-mark {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .login-navbar-title {
+    font-size: 18px;
+    font-weight: 700;
   }
 
   .login-body {
     flex-direction: column;
-    padding: 24px;
+    padding: 20px;
+    gap: 16px;
   }
 
   .login-left-image {
     height: 200px;
+    border-radius: 12px;
   }
 
   .login-card {
     padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  .login-card h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .login-card p {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .form-input:focus {
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  }
+
+  .btn-login {
+    padding: 12px 20px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-footer a,
+  .form-footer button {
+    font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
+  .login-navbar {
+    padding-inline: 16px;
+    padding-block: 12px;
+  }
+
   .login-navbar-inner {
-    gap: 8px;
+    gap: 10px;
   }
 
   .login-navbar-logo-mark {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     font-size: 16px;
   }
 
   .login-navbar-title {
     font-size: 16px;
+    font-weight: 600;
   }
 
   .login-body {
-    padding: 20px 16px 24px;
+    padding: 16px 12px 20px;
+    gap: 12px;
   }
 
   .login-left-image {
-    height: 180px;
+    height: 160px;
+    border-radius: 10px;
+  }
+
+  .login-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-card h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .login-card p {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
   }
 
   .form-input {
-    padding: 10px 12px;
+    padding: 9px 10px;
     font-size: 13px;
+    min-height: 36px;
+  }
+
+  .form-input::placeholder {
+    font-size: 12px;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
   }
 
   .btn-login {
-    padding: 12px 20px;
+    padding: 10px 16px;
     font-size: 13px;
+    min-height: 36px;
+    width: 100%;
   }
 
-  .form-footer-text p,
-  .login-footer p {
-    font-size: 11px;
+  .form-footer {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .form-footer a {
+    font-size: 12px;
+  }
+
+  .form-footer button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .success-alert,
+  .error-alert {
+    padding: 10px 12px;
+    font-size: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
   }
 }
 

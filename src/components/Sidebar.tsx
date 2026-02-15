@@ -10,7 +10,12 @@ type NavLinkConfig = {
   roles: Role[];
 };
 
-export default function Sidebar() {
+type SidebarProps = {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
+
+export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   const { user } = useAuth();
   const role = user?.role;
   const location = useLocation();
@@ -60,8 +65,14 @@ export default function Sidebar() {
     }
   ];
 
+  const handleNavClick = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <aside className="modern-sidebar">
+    <aside className={`modern-sidebar ${isOpen ? "open" : ""}`}>
       <div className="sidebar-header">
         <div className="logo">
           <img src={logoImage} alt="Sidrid logo" className="sidebar-logo-img" />
@@ -76,6 +87,7 @@ export default function Sidebar() {
               <Link
                 key={link.to}
                 to={link.to}
+                onClick={handleNavClick}
                 className={`nav-link ${location.pathname === link.to ? "active" : ""}`}
               >
                 <span className="nav-icon">{link.icon}</span>

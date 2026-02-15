@@ -123,6 +123,15 @@
   .staff-container {
     padding: 16px;
   }
+
+  .staff-table {
+    font-size: 13px;
+  }
+
+  .staff-table th,
+  .staff-table td {
+    padding: 12px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -130,12 +139,215 @@
     padding: 12px;
   }
 
+  .staff-header h1 {
+    font-size: 22px;
+  }
+
+  .staff-header p {
+    font-size: 13px;
+  }
+
+  .staff-info-banner {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .btn-staff-add {
+    padding: 10px 16px;
+    font-size: 13px;
+    width: 100%;
+  }
+
   .staff-table-wrapper {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
   }
 
   .staff-table {
     min-width: 600px;
+    font-size: 12px;
+  }
+
+  .staff-table th {
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .staff-table td {
+    padding: 10px 8px;
+  }
+
+  .staff-id {
+    font-size: 12px;
+  }
+
+  .staff-remove-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .staff-container {
+    padding: 10px;
+  }
+
+  .staff-header h1 {
+    font-size: 18px;
+  }
+
+  .staff-header p {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .staff-info-banner {
+    font-size: 11px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+  }
+
+  .btn-staff-add {
+    padding: 10px 12px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .staff-table-wrapper {
+    border-radius: 8px;
+  }
+
+  .staff-table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+
+  .staff-table th {
+    padding: 8px 6px;
+    font-size: 10px;
+  }
+
+  .staff-table td {
+    padding: 8px 6px;
+  }
+
+  .staff-id {
+    font-size: 11px;
+  }
+
+  .staff-role {
+    font-size: 11px;
+  }
+
+  .staff-remove-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .staff-empty {
+    padding: 16px 0;
+    font-size: 13px;
+  }
+
+  .modal-content {
+    width: 98%;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 12px;
+  }
+
+  .modal-header h2 {
+    font-size: 15px;
+  }
+
+  .modal-body {
+    padding: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .modal-footer {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
   }
 }
 

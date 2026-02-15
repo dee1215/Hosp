@@ -343,59 +343,265 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
+
+  .nurse-container {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .nurse-container {
-    padding: 16px;
+    padding: 12px;
+  }
+
+  .nurse-header {
+    margin-bottom: 20px;
   }
 
   .nurse-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
-  .vitals-grid {
+  .nurse-header p {
+    font-size: 13px;
+  }
+
+  .nurse-layout {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
+  }
+
+  .nurse-form-card,
+  .patients-list-card {
+    max-height: none;
+    border-radius: 10px;
+  }
+
+  .form-header {
+    padding: 16px;
+  }
+
+  .form-header h3 {
+    font-size: 15px;
   }
 
   .form-body {
     padding: 16px;
   }
 
-  .nurse-form-card,
-  .patients-list-card {
-    max-height: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .nurse-header h1 {
-    font-size: 20px;
+  .form-group {
+    margin-bottom: 14px;
   }
 
   .form-label {
     font-size: 13px;
+    margin-bottom: 6px;
   }
 
   .form-input,
   .form-select {
-    font-size: 13px;
-    padding: 8px 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
   }
 
-  .btn-primary {
+  .form-text {
+    font-size: 12px;
+  }
+
+  .vitals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .vitals-input-group label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .vitals-input-group input {
+    padding: 8px 10px;
     font-size: 13px;
-    padding: 8px 16px;
+    min-height: 36px;
+  }
+
+  .form-actions {
+    gap: 8px;
+    padding-top: 14px;
+  }
+
+  .btn-primary,
+  .btn-cancel {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .patients-list-header {
+    padding: 16px;
+  }
+
+  .patients-list-header h3 {
+    font-size: 15px;
+  }
+
+  .patients-list {
+    max-height: 300px;
+    padding: 12px;
   }
 
   .patient-item {
     padding: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
   }
 
   .patient-name {
     font-size: 14px;
+  }
+
+  .patient-id {
+    font-size: 12px;
+  }
+
+  .btn-check-vitals {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nurse-container {
+    padding: 10px;
+  }
+
+  .nurse-header h1 {
+    font-size: 18px;
+  }
+
+  .nurse-header p {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .nurse-layout {
+    gap: 12px;
+  }
+
+  .form-header {
+    padding: 12px;
+  }
+
+  .form-header h3 {
+    font-size: 14px;
+  }
+
+  .form-body {
+    padding: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-label-required::after {
+    font-size: 12px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .form-text {
+    font-size: 11px;
+  }
+
+  .vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .vitals-input-group label {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .vitals-input-group input {
+    padding: 6px 8px;
+    font-size: 12px;
+    min-height: 32px;
+  }
+
+  .vitals-input-group input:focus {
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+  }
+
+  .form-actions {
+    gap: 6px;
+    padding-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary,
+  .btn-cancel {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+
+  .patients-list-header {
+    padding: 12px;
+  }
+
+  .patients-list-header h3 {
+    font-size: 14px;
+  }
+
+  .patients-list {
+    max-height: 250px;
+    padding: 8px;
+  }
+
+  .patient-item {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+  }
+
+  .patient-name {
+    font-size: 12px;
+  }
+
+  .patient-id {
+    font-size: 11px;
+  }
+
+  .btn-check-vitals {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .input-error {
+    border-color: #ef4444 !important;
+  }
+
+  .form-error,
+  .field-error {
+    font-size: 11px;
   }
 }
 

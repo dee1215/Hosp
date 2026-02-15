@@ -333,24 +333,45 @@
   .pharmacy-layout {
     grid-template-columns: 1fr;
   }
+
+  .pharmacy-container {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .pharmacy-container {
-    padding: 16px;
+    padding: 12px;
+  }
+
+  .pharmacy-header {
+    margin-bottom: 20px;
   }
 
   .pharmacy-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
-  .inventory-table {
+  .pharmacy-header p {
     font-size: 13px;
   }
 
-  .inventory-table th,
-  .inventory-table td {
-    padding: 10px 12px;
+  .pharmacy-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .inventory-card,
+  .dispensing-card {
+    border-radius: 10px;
+  }
+
+  .card-header {
+    padding: 16px;
+  }
+
+  .card-header h3 {
+    font-size: 15px;
   }
 
   .card-body {
@@ -358,37 +379,227 @@
   }
 
   .table-wrapper {
-    max-height: 400px;
-  }
-}
-
-@media (max-width: 480px) {
-  .pharmacy-header h1 {
-    font-size: 20px;
+    max-height: 350px;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
   }
 
   .inventory-table {
     font-size: 12px;
+    min-width: 600px;
   }
 
-  .inventory-table th,
+  .inventory-table th {
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
   .inventory-table td {
-    padding: 8px;
+    padding: 10px 8px;
+  }
+
+  .medicine-name {
+    gap: 6px;
+  }
+
+  .stock-level {
+    font-size: 13px;
+  }
+
+  .unit-label {
+    font-size: 12px;
+  }
+
+  .stock-status {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
   }
 
   .form-label {
     font-size: 13px;
+    margin-bottom: 6px;
   }
 
   .form-input,
   .form-select {
-    font-size: 13px;
-    padding: 8px 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .form-text {
+    font-size: 12px;
+  }
+
+  .dispensing-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .btn-dispense {
     padding: 10px 16px;
     font-size: 13px;
+    min-height: 40px;
+    width: 100%;
+  }
+
+  .dispensing-summary {
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .summary-item {
+    font-size: 13px;
+    padding: 8px 0;
+  }
+
+  .summary-label,
+  .summary-value {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pharmacy-container {
+    padding: 10px;
+  }
+
+  .pharmacy-header h1 {
+    font-size: 18px;
+  }
+
+  .pharmacy-header p {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .pharmacy-layout {
+    gap: 12px;
+  }
+
+  .card-header {
+    padding: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 14px;
+  }
+
+  .card-body {
+    padding: 12px;
+  }
+
+  .table-wrapper {
+    max-height: 300px;
+    border-radius: 6px;
+  }
+
+  .inventory-table {
+    font-size: 11px;
+    min-width: 500px;
+  }
+
+  .inventory-table th {
+    padding: 8px 6px;
+    font-size: 10px;
+  }
+
+  .inventory-table td {
+    padding: 8px 6px;
+  }
+
+  .inventory-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .medicine-name {
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .medicine-badge {
+    width: 6px;
+    height: 6px;
+  }
+
+  .stock-level {
+    font-size: 11px;
+    font-family: monospace;
+  }
+
+  .unit-label {
+    font-size: 10px;
+  }
+
+  .stock-status {
+    padding: 2px 6px;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .form-text {
+    font-size: 11px;
+  }
+
+  .dispensing-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btn-dispense {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+    width: 100%;
+  }
+
+  .dispensing-summary {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+  }
+
+  .summary-item {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .summary-label {
+    font-size: 11px;
+  }
+
+  .summary-value {
+    font-size: 12px;
+  }
+
+  .input-error {
+    border-color: #ef4444 !important;
+  }
+
+  .form-error {
+    font-size: 11px;
   }
 }
 

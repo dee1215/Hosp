@@ -675,86 +675,268 @@
   .dashboard-container {
     padding: 1.5rem;
   }
-}
-
-@media (max-width: 768px) {
-  .kpi-grid {
-    grid-template-columns: 1fr;
-  }
 
   .dashboard-title {
     font-size: 2rem;
   }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+    min-height: calc(100vh - 140px);
+  }
+
+  .dashboard-header {
+    margin-bottom: 2rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+  }
 
   .dashboard-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
-  .table-controls {
-    flex-direction: column;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .kpi-grid {
+    grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  .advanced-table {
-    font-size: 0.85rem;
-  }
-
-  .advanced-table th,
-  .advanced-table td {
-    padding: 0.75rem;
-  }
-
-  .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+    margin-bottom: 2rem;
   }
 
   .kpi-card {
-    padding: 1.5rem;
+    padding: 1.25rem;
+    border-radius: 1rem;
   }
 
-  .dashboard-container {
-    padding: 1rem;
+  .kpi-card:hover {
+    transform: translateY(-4px);
   }
-}
 
-@media (max-width: 480px) {
-  .dashboard-title {
-    font-size: 1.5rem;
+  .kpi-header {
+    margin-bottom: 1rem;
+  }
+
+  .kpi-icon {
+    font-size: 2rem;
   }
 
   .kpi-value {
     font-size: 1.5rem;
   }
 
-  .kpi-grid {
+  .kpi-label {
+    font-size: 0.85rem;
+  }
+
+  .kpi-trend {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .charts-section {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .chart-container {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+
+  .chart-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .chart-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .chart-period {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .table-section {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .section-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .table-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .table-wrapper {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .advanced-table {
+    font-size: 0.85rem;
+  }
+
+  .advanced-table th {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .advanced-table td {
+    padding: 0.75rem;
+  }
+
+  .patient-cell {
+    gap: 0.5rem;
+  }
+
+  .patient-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .calendar-section {
+    grid-template-columns: 1fr;
+    margin-bottom: 2rem;
   }
 
   .weekdays {
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   .calendar-dates {
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   .weekday,
   .calendar-date {
     font-size: 0.75rem;
+    padding: 0.5rem;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 0.75rem;
   }
 
-  .advanced-table th,
+  .dashboard-title {
+    font-size: 1.35rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .dashboard-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi-grid {
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .kpi-icon {
+    font-size: 1.75rem;
+  }
+
+  .kpi-value {
+    font-size: 1.25rem;
+  }
+
+  .kpi-label {
+    font-size: 0.8rem;
+  }
+
+  .kpi-trend {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .charts-section {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-container {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .chart-header h3 {
+    font-size: 1rem;
+  }
+
+  .table-section {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h3 {
+    font-size: 1rem;
+  }
+
+  .filter-select {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .advanced-table {
+    font-size: 0.75rem;
+  }
+
+  .advanced-table th {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+
   .advanced-table td {
     padding: 0.5rem;
-    font-size: 0.75rem;
+  }
+
+  .patient-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .weekday,
+  .calendar-date {
+    font-size: 0.7rem;
+    padding: 0.35rem;
   }
 }
 

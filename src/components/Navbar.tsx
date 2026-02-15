@@ -1,12 +1,19 @@
 import { useAuth } from "../context/AuthContext";
 
-export default function Navbar() {
+type NavbarProps = {
+  onMenuClick?: () => void;
+};
+
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const { user, logout } = useAuth();
 
   return (
     <header className="modern-navbar">
       <div className="navbar-content">
         <div className="navbar-left">
+          <button className="btn-menu" onClick={onMenuClick} aria-label="Toggle menu">
+            ☰
+          </button>
           <h4 className="navbar-title">Hospital Management System</h4>
         </div>
 

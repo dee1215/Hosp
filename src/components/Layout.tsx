@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import "./Layout.css";
@@ -8,11 +8,19 @@ type LayoutProps = {
 };
 
 export default function Layout({ children }: LayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div className="modern-layout">
-      <Sidebar />
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+      )}
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
       <div className="layout-wrapper">
-        <Navbar />
+        <Navbar onMenuClick={toggleSidebar} />
         <main className="layout-content">{children}</main>
       </div>
     </div>

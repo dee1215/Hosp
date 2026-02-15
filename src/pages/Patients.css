@@ -382,6 +382,10 @@
     font-size: 24px;
   }
 
+  .patients-actions {
+    gap: 10px;
+  }
+
   .patients-table {
     font-size: 13px;
   }
@@ -397,49 +401,295 @@
     padding: 12px;
   }
 
+  .patients-header {
+    margin-bottom: 20px;
+  }
+
+  .patients-header h1 {
+    font-size: 22px;
+  }
+
+  .patients-header p {
+    font-size: 13px;
+  }
+
+  .patients-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-register {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .success-message {
+    font-size: 13px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+  }
+
   .patients-table-wrapper {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
   }
 
   .patients-table {
-    min-width: 500px;
+    min-width: 600px;
+    font-size: 12px;
   }
 
-  .modal-content {
+  .patients-table th {
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .patients-table td {
+    padding: 10px 8px;
+  }
+
+  .patient-action-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .modal-content,
+  .popup-card {
     width: 95%;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header,
+  .popup-header {
+    padding: 16px;
+  }
+
+  .modal-header h2,
+  .popup-header h3 {
+    font-size: 16px;
+  }
+
+  .modal-body,
+  .popup-body {
+    padding: 16px;
+  }
+
+  .modal-close,
+  .popup-close {
+    font-size: 20px;
+    padding: 2px 6px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .modal-footer {
-    flex-direction: column;
+  .modal-footer,
+  .popup-footer {
+    padding: 12px 16px;
+    flex-direction: column-reverse;
+    gap: 10px;
   }
 
   .btn-cancel,
+  .btn-popup-close,
   .btn-submit {
     width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .otp-code {
+    font-size: 36px;
+    letter-spacing: 6px;
+    margin: 12px 0;
+  }
+
+  .otp-input-group {
+    gap: 6px;
+    margin: 16px 0;
+  }
+
+  .otp-input {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .patients-header h1 {
-    font-size: 20px;
+  .patients-container {
+    padding: 10px;
   }
 
-  .patients-table {
+  .patients-header {
+    margin-bottom: 16px;
+  }
+
+  .patients-header h1 {
+    font-size: 18px;
+  }
+
+  .patients-header p {
     font-size: 12px;
   }
 
-  .patients-table th,
+  .patients-actions {
+    gap: 8px;
+  }
+
+  .btn-register {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .success-message {
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+
+  .patients-table-wrapper {
+    border-radius: 8px;
+  }
+
+  .patients-table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+
+  .patients-table th {
+    padding: 8px 6px;
+    font-size: 10px;
+  }
+
   .patients-table td {
-    padding: 8px 4px;
+    padding: 8px 6px;
+  }
+
+  .patient-id {
+    font-size: 11px;
+  }
+
+  .patient-status {
+    padding: 3px 8px;
+    font-size: 10px;
   }
 
   .patient-action-btn {
-    padding: 6px 12px;
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .modal-content,
+  .popup-card {
+    width: 98%;
+    max-height: 85vh;
+  }
+
+  .modal-header,
+  .popup-header {
+    padding: 12px;
+  }
+
+  .modal-header h2,
+  .popup-header h3 {
+    font-size: 15px;
+  }
+
+  .modal-body,
+  .popup-body {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .modal-footer,
+  .popup-footer {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .btn-cancel,
+  .btn-popup-close,
+  .btn-submit {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+
+  .detail-row {
+    padding: 8px;
+  }
+
+  .detail-label {
     font-size: 11px;
+    min-width: 60px;
+  }
+
+  .detail-value {
+    font-size: 12px;
+  }
+
+  .otp-display {
+    padding: 24px 0;
+  }
+
+  .otp-code {
+    font-size: 32px;
+    letter-spacing: 4px;
+    margin: 10px 0;
+  }
+
+  .otp-input-group {
+    gap: 5px;
+    margin: 12px 0;
+  }
+
+  .otp-input {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
   }
 }
 

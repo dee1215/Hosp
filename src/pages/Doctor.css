@@ -370,56 +370,315 @@ textarea:focus {
   .patients-ready-card {
     height: auto;
   }
+
+  .doctor-container {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .doctor-container {
-    padding: 16px;
+    padding: 12px;
   }
 
   .doctor-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
-  .vitals-report-grid {
+  .doctor-header p {
+    font-size: 13px;
+  }
+
+  .doctor-layout {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .medication-item {
-    grid-template-columns: 1fr;
+  .consultation-card {
+    border-radius: 10px;
   }
 
-  .medications-list {
-    max-height: none;
+  .card-header {
+    padding: 16px;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .card-header h3 {
+    font-size: 15px;
   }
 
   .card-body {
     padding: 16px;
   }
-}
 
-@media (max-width: 480px) {
-  .doctor-header h1 {
-    font-size: 20px;
+  .form-group {
+    margin-bottom: 14px;
   }
 
   .form-label {
     font-size: 13px;
+    margin-bottom: 6px;
   }
 
   .form-input,
   .form-select,
   textarea {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .vitals-report {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .vitals-report h4 {
     font-size: 13px;
-    padding: 8px 12px;
+    margin: 0 0 10px 0;
+  }
+
+  .vitals-report-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .vitals-report-item {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .vitals-label {
+    font-size: 11px;
+  }
+
+  .vitals-value {
+    font-size: 13px;
+  }
+
+  .medications-section {
+    margin-bottom: 16px;
+  }
+
+  .medications-header {
+    margin-bottom: 10px;
+  }
+
+  .medications-title {
+    font-size: 13px;
+  }
+
+  .btn-add-medication {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .medications-list {
+    max-height: 250px;
+    gap: 10px;
+  }
+
+  .medication-item {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .medication-input label {
+    font-size: 12px;
+  }
+
+  .medication-input input {
+    font-size: 13px;
+    padding: 8px 10px;
+    min-height: 36px;
+  }
+
+  .btn-remove-medication {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .patients-ready-card {
+    border-radius: 10px;
+  }
+
+  .patients-ready-header {
+    padding: 16px;
+  }
+
+  .patients-ready-header h3 {
+    font-size: 15px;
+  }
+
+  .patients-list {
+    max-height: 300px;
+    gap: 8px;
+  }
+
+  .patient-ready-item {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .patient-info {
+    gap: 8px;
+  }
+
+  .patient-info span {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor-container {
+    padding: 10px;
+  }
+
+  .doctor-header h1 {
+    font-size: 18px;
+  }
+
+  .doctor-header p {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .doctor-layout {
+    gap: 12px;
+  }
+
+  .card-header {
+    padding: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 14px;
+  }
+
+  .card-body {
+    padding: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-select,
+  textarea {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .form-text {
+    font-size: 11px;
+  }
+
+  .vitals-report {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .vitals-report h4 {
+    font-size: 12px;
+    margin: 0 0 8px 0;
+  }
+
+  .vitals-report-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .vitals-report-item {
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  .vitals-label {
+    font-size: 10px;
+  }
+
+  .vitals-value {
+    font-size: 12px;
+  }
+
+  .medications-title {
+    font-size: 12px;
+  }
+
+  .btn-add-medication {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .medications-list {
+    max-height: 200px;
+    gap: 8px;
+  }
+
+  .medication-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
   }
 
   .medication-input label {
     font-size: 11px;
   }
 
-  .patient-ready-item {
+  .medication-input input {
+    font-size: 12px;
+    padding: 6px 8px;
+    min-height: 32px;
+  }
+
+  .btn-remove-medication {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .patients-ready-header {
     padding: 12px;
+  }
+
+  .patients-ready-header h3 {
+    font-size: 14px;
+  }
+
+  .patients-list {
+    max-height: 250px;
+    gap: 6px;
+  }
+
+  .patient-ready-item {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .patient-info {
+    gap: 6px;
+  }
+
+  .patient-info span {
+    font-size: 11px;
+  }
+
+  .btn-prescribe {
+    padding: 6px 10px;
+    font-size: 10px;
+    min-height: 28px;
   }
 }
 
