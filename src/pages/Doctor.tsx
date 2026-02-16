@@ -262,7 +262,7 @@ export default function Doctor() {
                                     className="suggestion-item"
                                     onClick={() => selectMedicineSuggestion(index, med.name)}
                                   >
-                                    {med.name} <span style={{ fontSize: "0.85rem", color: "#666" }}>GH₵ {med.price.toFixed(2)}</span>
+                                    {med.name}
                                   </div>
                                 ))}
                               </div>
