@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import Layout from "../components/Layout";
 import { useData } from "../context/DataContext";
 import { useToast } from "../context/ToastContext";
+import { useAuth } from "../context/AuthContext";
 import type { Patient } from "../types";
 import "./Patients.css";
 
@@ -13,6 +14,7 @@ import "./Patients.css";
 export default function Patients() {
   const { patients, addPatient, updatePatientStatus } = useData();
   const { addToast } = useToast();
+  const { user } = useAuth();
 
   // Local state for modals and forms
   const [showAddModal, setShowAddModal] = useState(false);
@@ -75,9 +77,11 @@ export default function Patients() {
 
 
         <div className="patients-actions">
-          <button className="btn-register" onClick={() => setShowAddModal(true)}>
-            + Register New Patient
-          </button>
+          {(user?.role === "nurse" || user?.role === "admin") && (
+            <button className="btn-register" onClick={() => setShowAddModal(true)}>
+              + Register New Patient
+            </button>
+          )}
         </div>
 
         <div className="patients-table-wrapper">
@@ -105,13 +109,15 @@ export default function Patients() {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="patient-action-btn"
-                      disabled={p.status !== "Registered"}
-                      onClick={() => startAttendance(p)}
-                    >
-                      {p.status === "Registered" ? "Start Check-in" : "Checked In"}
-                    </button>
+                    {(user?.role === "nurse" || user?.role === "admin") && (
+                      <button
+                        className="patient-action-btn"
+                        disabled={p.status !== "Registered"}
+                        onClick={() => startAttendance(p)}
+                      >
+                        {p.status === "Registered" ? "Start Check-in" : "Checked In"}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
